@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sertavo - ביטחון לפני הבקבוק</title>
+<meta name="description" content="Sertavo - דוח התאמה אישי לפני שקונים בושם. לקנות, לנסות קודם, או לדלג - עם ציון ודאות. אנחנו לא חנות בשמים.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Assistant:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16211F;        /* טקסט ראשי */
+    --fog:#EEF1EF;        /* רקע */
+    --amber:#A4691F;      /* נגיעת ענבר — נוזל הבושם */
+    --teal:#37625B;       /* משני */
+    --line:#D6DCD9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--fog);
+    color:var(--ink);
+    font-family:'Assistant',system-ui,sans-serif;
+    font-size:18px;line-height:1.65;
+    display:flex;flex-direction:column;min-height:100dvh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{width:min(560px,92%);margin-inline:auto;flex:1;
+        display:flex;flex-direction:column;justify-content:center;
+        padding:48px 0 24px}
+  .brand{font-family:'Frank Ruhl Libre',serif;font-weight:700;
+         font-size:20px;letter-spacing:.14em;text-transform:uppercase;
+         color:var(--teal)}
+  h1{
+    font-family:'Frank Ruhl Libre',serif;font-weight:700;
+    font-size:clamp(34px,8vw,46px);line-height:1.2;
+    margin:20px 0 12px;
+  }
+  h1 em{font-style:normal;color:var(--amber)}
+  .sub{font-size:19px;max-width:46ch}
+
+  /* חתימת העמוד: טבעת ציון ההתאמה */
+  .score{display:flex;align-items:center;gap:22px;margin:38px 0}
+  .ring{width:118px;height:118px;flex:none}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring .track{fill:none;stroke:var(--line);stroke-width:8}
+  .ring .fill{fill:none;stroke:var(--amber);stroke-width:8;
+              stroke-linecap:round;
+              stroke-dasharray:326.7;stroke-dashoffset:326.7;
+              transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1)}
+  .ring .num{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    font-family:'Frank Ruhl Libre',serif;font-weight:700;
+  }
+  .ring{position:relative}
+  .ring .num b{font-size:34px;font-variant-numeric:tabular-nums;line-height:1}
+  .ring .num span{font-size:12px;letter-spacing:.08em;color:var(--teal)}
+  .score p{font-size:16px;color:var(--teal);max-width:30ch}
+
+  ul{list-style:none;margin:6px 0 34px}
+  li{padding-inline-start:26px;position:relative;margin-bottom:10px}
+  li::before{content:"";position:absolute;inset-inline-start:0;top:.62em;
+             width:12px;height:2px;background:var(--amber)}
+
+  .cta{
+    display:inline-block;background:var(--ink);color:var(--fog);
+    text-decoration:none;font-weight:600;font-size:19px;
+    padding:16px 34px;border-radius:999px;
+    transition:background .2s;
+  }
+  .cta:hover,.cta:focus-visible{background:var(--teal)}
+  .cta:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+  .cta small{display:block;font-weight:400;font-size:13px;opacity:.75}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:18px 0;text-align:center;
+    font-size:14px;color:var(--teal);
+  }
+  footer .en{font-family:'Frank Ruhl Libre',serif;letter-spacing:.06em}
+
+  @media (prefers-reduced-motion:reduce){
+    .ring .fill{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="brand">Sertavo</div>
+
+  <h1>איך יודעים שבושם באמת מתאים לך - <em>לפני ששילמתם עליו?</em></h1>
+
+  <p class="sub">עונים על כמה שאלות קצרות בווטסאפ, ומקבלים דוח התאמה אישי:
+  לקנות, לנסות קודם, או לדלג - עם ציון ודאות.</p>
+
+  <!-- חתימת העמוד: ציון ההתאמה -->
+  <div class="score" aria-hidden="true">
+    <div class="ring">
+      <svg viewBox="0 0 118 118">
+        <circle class="track" cx="59" cy="59" r="52"></circle>
+        <circle class="fill" id="ringFill" cx="59" cy="59" r="52"></circle>
+      </svg>
+      <div class="num"><b id="ringNum">0</b><span>ציון התאמה</span></div>
+    </div>
+    <p>כל דוח נסגר במספר אחד ברור - כמה הבושם הזה מתאים <u>לך</u>.</p>
+  </div>
+
+  <ul>
+    <li>מותאם אישית - לעור, לאקלים ולטעם שלך, לא להייפ.</li>
+    <li>רוצים ודאות מלאה? ערכת אימות - הבושם על העור שלכם לפני הבקבוק.</li>
+    <li>אנחנו לא חנות בשמים. לא מוכרים בקבוקים, לא מקבלים עמלות ממותגים - ולא מרוויחים שקל מהבושם שתחליטו לקנות.</li>
+  </ul>
+
+  <!-- ‼️ עדכן את המספר: 972 ואז מספר הווטסאפ העסקי בלי 0 -->
+  <a class="cta" href="https://wa.me/972544569090?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%91%D7%93%D7%95%D7%A7%20%D7%91%D7%95%D7%A9%D7%9D">
+    לבדוק בושם בווטסאפ
+    <small>שאלון קצר · דוח תוך 24 שעות</small>
+  </a>
+</main>
+
+<footer>
+  <div class="en">SERTAVO - Confidence Before the Bottle.</div>
+  <div>עצמאיים. לא מוכרים בשמים.</div>
+</footer>
+
+<script>
+  // אנימציית ציון ההתאמה — 87
+  const TARGET = 87;
+  const CIRC = 326.7; // היקף הטבעת
+  const fill = document.getElementById('ringFill');
+  const num  = document.getElementById('ringNum');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function run(){
+    fill.style.strokeDashoffset = CIRC * (1 - TARGET/100);
+    if(reduce){ num.textContent = TARGET; return; }
+    const t0 = performance.now();
+    (function tick(t){
+      const p = Math.min((t - t0)/1600, 1);
+      num.textContent = Math.round(TARGET * (1 - Math.pow(1-p,3)));
+      if(p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  addEventListener('load', ()=>setTimeout(run, 300));
+</script>
+
+</body>
+</html>
