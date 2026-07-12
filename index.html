@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sertavo - ביטחון לפני הבקבוק</title>
-<meta name="description" content="Sertavo - דוח התאמה אישי לפני שקונים בושם. לקנות, לנסות קודם, או לדלג - עם ציון ודאות. אנחנו לא חנות בשמים.">
+<meta name="description" content="Sertavo - דוח התאמה אישי לפני שקונים בושם. לקנות, לנסות קודם, או לדלג - עם ציון התאמה. אנחנו לא חנות בשמים.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Assistant:wght@400;600&display=swap" rel="stylesheet">
@@ -32,7 +32,8 @@
   .brand{font-family:'Frank Ruhl Libre',serif;font-weight:700;
          font-size:20px;letter-spacing:.14em;text-transform:uppercase;
          color:var(--teal);display:flex;align-items:center;gap:14px}
-  .brand img{width:44px;height:auto}
+  .brand img{width:54px;height:auto}
+  .brand .tag{display:block;font-family:'Assistant',sans-serif;font-weight:400;font-size:13px;letter-spacing:0;color:var(--teal);margin-top:2px}
   h1{
     font-family:'Frank Ruhl Libre',serif;font-weight:700;
     font-size:clamp(34px,8vw,46px);line-height:1.2;
@@ -42,7 +43,7 @@
   .sub{font-size:19px;max-width:46ch}
 
   /* חתימת העמוד: טבעת ציון ההתאמה */
-  .score{display:flex;align-items:center;gap:22px;margin:38px 0}
+  .score{display:flex;align-items:center;gap:22px;margin:26px 0}
   .ring{width:118px;height:118px;flex:none}
   .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
   .ring .track{fill:none;stroke:var(--line);stroke-width:8}
@@ -58,7 +59,8 @@
   .ring{position:relative}
   .ring .num b{font-size:34px;font-variant-numeric:tabular-nums;line-height:1}
   .ring .num span{font-size:12px;letter-spacing:.08em;color:var(--teal)}
-  .score p{font-size:16px;color:var(--teal);max-width:30ch}
+  .score p{font-size:16px;color:var(--teal);max-width:32ch}
+  .score .how{font-size:13px;opacity:.8}
 
   ul{list-style:none;margin:6px 0 34px}
   li{padding-inline-start:26px;position:relative;margin-bottom:10px}
@@ -75,7 +77,7 @@
   .cta svg{width:26px;height:26px;flex:none}
   .cta:hover,.cta:focus-visible{background:#1DA851}
   .cta:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
-  .cta small{display:block;font-weight:400;font-size:13px;opacity:.85}
+  .cta small{display:block;font-weight:400;font-size:15px;opacity:.9}
 
   footer{
     border-top:1px solid var(--line);
@@ -93,12 +95,13 @@
 <body>
 
 <main class="wrap">
-  <div class="brand"><img src="logo.png" alt="הלוגו של Sertavo - בקבוק בושם עם וי של אישור">Sertavo</div>
+  <div class="brand"><img src="logo.png" alt="הלוגו של Sertavo - בקבוק בושם עם וי של אישור">
+    <span>Sertavo<small class="tag">בדיקת התאמה לפני קניית בושם</small></span></div>
 
   <h1>איך יודעים שבושם באמת מתאים לך - <em>לפני ששילמת עליו?</em></h1>
 
   <p class="sub">עונים על כמה שאלות קצרות בווטסאפ, ומקבלים דוח התאמה אישי:
-  לקנות, לנסות קודם, או לדלג - עם ציון ודאות.</p>
+  לקנות, לנסות קודם, או לדלג - עם ציון התאמה.</p>
 
   <!-- חתימת העמוד: ציון ההתאמה -->
   <div class="score" aria-hidden="true">
@@ -109,13 +112,13 @@
       </svg>
       <div class="num"><b id="ringNum">0</b><span>ציון התאמה</span></div>
     </div>
-    <p>כל דוח נסגר במספר אחד ברור - כמה הבושם הזה מתאים <u>לך</u>.</p>
+    <p>כל דוח נסגר במספר אחד ברור - כמה הבושם הזה מתאים <u>לך</u>.<br><span class="how">הציון משוקלל לפי הטעם, השימוש, האקלים והתקציב שלך.</span></p>
   </div>
 
   <ul>
     <li>מותאם אישית - לעור, לאקלים ולטעם שלך, לא להייפ.</li>
-    <li>רוצים ודאות מלאה? ערכת אימות - הבושם על העור שלכם לפני הבקבוק.</li>
-    <li>אנחנו לא חנות בשמים. לא מוכרים בקבוקים, לא מקבלים עמלות ממותגים - ולא מרוויחים שקל מהבושם שתחליטו לקנות.</li>
+    <li>רוצים לבדוק לפני בקבוק מלא? ערכת אימות עם דקנט עד הבית - הבושם על העור שלכם לפני ההחלטה.</li>
+    <li>אנחנו לא חנות בשמים. לא מוכרים בקבוקים, לא מקבלים עמלות ממותגים - ולא מרוויחים מהבושם שתחליטו לקנות.</li>
   </ul>
 
   <!-- ‼️ עדכן את המספר: 972 ואז מספר הווטסאפ העסקי בלי 0 -->
