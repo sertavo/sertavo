@@ -153,6 +153,21 @@
     };
   </script>
 
+  <script>
+    /* Show the floating CTA only after the hero button scrolls out of view,
+       so both buttons are never on screen at once. Falls back to always-visible
+       if JavaScript or IntersectionObserver is unavailable. */
+    (function () {
+      var sticky = document.querySelector(".sticky-cta");
+      var heroCta = document.querySelector(".hero .cta");
+      if (!sticky || !heroCta || !("IntersectionObserver" in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        sticky.classList.toggle("is-hidden", entries[0].isIntersecting);
+      }, { threshold: 0.15 });
+      io.observe(heroCta);
+    })();
+  </script>
+
   <script data-goatcounter="https://sertavo.goatcounter.com/count"
           async src="https://gc.zgo.at/count.js"></script>
 </body>

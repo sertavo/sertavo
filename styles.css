@@ -367,6 +367,13 @@ body.has-sticky-cta {
   line-height: 1.2;
   text-decoration: none;
   touch-action: manipulation;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.sticky-cta.is-hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(140%);
+  pointer-events: none;
 }
 
 .sticky-cta:hover {
