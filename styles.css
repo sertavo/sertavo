@@ -254,8 +254,18 @@ h2 {
 .score-fill {
   stroke: var(--gold);
   stroke-linecap: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 13;
+  stroke-dasharray: 87 100;
+  stroke-dashoffset: 0;
+  animation: score-ring-fill 1.2s ease-out both;
+}
+
+@keyframes score-ring-fill {
+  from {
+    stroke-dasharray: 0 100;
+  }
+  to {
+    stroke-dasharray: 87 100;
+  }
 }
 
 .score-number {
@@ -327,6 +337,65 @@ h2 {
 
 .secondary-cta {
   margin-top: 22px;
+}
+
+/* Floating (always-visible) WhatsApp CTA */
+body.has-sticky-cta {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+.sticky-cta {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(100% - 24px, 460px);
+  min-height: 58px;
+  padding: 12px 22px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--ink);
+  box-shadow: 0 8px 26px rgba(7, 70, 134, 0.32);
+  color: #ffffff;
+  font-size: 1.04rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.sticky-cta:hover {
+  box-shadow: 0 10px 30px rgba(7, 70, 134, 0.4);
+  text-decoration: none;
+}
+
+.sticky-cta:focus-visible {
+  outline-color: var(--focus);
+  outline-offset: 4px;
+}
+
+.sticky-cta .cta-icon,
+.sticky-cta .cta-icon svg {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+@media (forced-colors: active) {
+  .sticky-cta {
+    border: 2px solid CanvasText;
+  }
+}
+
+@media print {
+  .sticky-cta {
+    display: none !important;
+  }
 }
 
 .site-footer {
