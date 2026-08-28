@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="theme-color" content="#0C2038">
+<title>Sertavo Instagram Generator v1.2.5 Preview</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#EDE9E2}
+iframe{display:block;width:100%;height:100%;border:0;background:#EDE9E2}
+</style>
+</head>
+<body>
+<iframe id="versionFrame" src="../v124-preview/" allow="web-share" title="Sertavo Instagram Generator v1.2.5"></iframe>
+<script>
+const outer=document.getElementById('versionFrame');
+outer.addEventListener('load',()=>{
+  const outerDoc=outer.contentWindow.document;
+  const inner=outerDoc.getElementById('appFrame');
+  if(!inner)return;
+  const boot=()=>{
+    const app=inner.contentWindow,d=inner.contentWindow.document;
+    if(!d||!d.getElementById('body'))return;
+
+    const css=d.createElement('style');
+    css.textContent=`
+      .copyAssist{display:none!important}
+      .copyStudio{margin:10px 0 2px;padding:11px;background:#F7FAFC;border:1px solid #E1E9EF;border-radius:11px}
+      .copyStudioTop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+      .copyStudioTop strong{font-size:13px;color:#164F7D}.copyHealth{font-size:11px;border-radius:999px;padding:5px 8px;background:#EAF3F8;color:#31516B;white-space:nowrap}
+      .copyHealth.warn{background:#FFF1DE;color:#865D28}.fieldTabs,.suggestionBtns{display:grid;gap:6px}.fieldTabs{grid-template-columns:repeat(4,1fr);margin-bottom:7px}.suggestionBtns{grid-template-columns:repeat(3,1fr)}
+      .fieldTabs button,.suggestionBtns button{border:1px solid #D9E0E5;background:#fff;color:#21394F;border-radius:8px;padding:8px 4px;font-size:11px;font-weight:800;cursor:pointer}
+      .fieldTabs button.active{background:#0C2038;color:#fff;border-color:#0C2038}.suggestionBtns button:first-child{border-color:#C99A5A;background:#FFF8EE;color:#7A5628}
+      .suggestionBtns button:disabled{opacity:.38;cursor:not-allowed}.copyPreview{font-size:11px;color:#5F6D79;line-height:1.45;margin-top:8px;min-height:30px}.copyRule{font-size:10px;color:#7A8792;margin-top:6px}
+    `;
+    d.head.appendChild(css);
+
+    try{
+      const saved=JSON.parse(app.localStorage.getItem('sertavoIGv125')||'null');
+      if(saved&&saved.carousels)app.project=saved;
+    }catch(e){}
+    app.save=function(){
+      try{app.localStorage.setItem('sertavoIGv125',JSON.stringify(app.project));d.getElementById('status').textContent='נשמר אוטומטית במכשיר.'}
+      catch(e){d.getElementById('status').textContent='השמירה המקומית נכשלה.'}
+    };
+
+    app.eval(`
+      function template_c1s2(){
+        bg(C.navy);drawLogo();title(current().title,165,'#fff',64);
+        const y=600+current().visualShift;
+        if(heroImg){photo(heroImg,245,390,590,475,34)}else{
+          ctx.save();
+          let skin=ctx.createLinearGradient(230,y+30,850,y+150);
+          skin.addColorStop(0,'#C99070');skin.addColorStop(.48,'#DFA987');skin.addColorStop(1,'#C78968');
+          ctx.beginPath();
+          ctx.moveTo(215,y+76);
+          ctx.bezierCurveTo(350,y+35,700,y+28,865,y+72);
+          ctx.bezierCurveTo(885,y+78,892,y+96,883,y+113);
+          ctx.bezierCurveTo(740,y+142,370,y+151,220,y+126);
+          ctx.bezierCurveTo(204,y+118,201,y+91,215,y+76);
+          ctx.closePath();ctx.fillStyle=skin;ctx.fill();
+          let shine=ctx.createLinearGradient(300,y+45,760,y+125);shine.addColorStop(0,'rgba(255,245,235,.10)');shine.addColorStop(.55,'rgba(255,245,235,.22)');shine.addColorStop(1,'rgba(255,245,235,0)');ctx.fillStyle=shine;ctx.fill();
+          const px=548,py=y+78;
+          let bloom=ctx.createRadialGradient(px,py,2,px,py,48);bloom.addColorStop(0,'rgba(255,250,242,.55)');bloom.addColorStop(.38,'rgba(190,145,88,.20)');bloom.addColorStop(1,'rgba(190,145,88,0)');ctx.fillStyle=bloom;ctx.beginPath();ctx.arc(px,py,48,0,Math.PI*2);ctx.fill();circle(px,py,6,'#FFF7ED');
+          const mist=[[606,y-42,3.4,.60],[631,y-65,3,.50],[654,y-86,2.5,.42],[674,y-106,2,.34]];mist.forEach(m=>circle(m[0],m[1],m[2],'rgba(246,239,229,'+m[3]+')'));
+          ctx.lineCap='round';ctx.strokeStyle='rgba(246,239,229,.28)';ctx.lineWidth=1.25;ctx.beginPath();ctx.moveTo(px-9,py-9);ctx.bezierCurveTo(515,y+22,518,y-26,492,y-69);ctx.stroke();
+          ctx.strokeStyle='rgba(190,145,88,.62)';ctx.lineWidth=1.55;ctx.beginPath();ctx.moveTo(px+9,py-9);ctx.bezierCurveTo(575,y+21,580,y-26,612,y-62);ctx.bezierCurveTo(630,y-82,644,y-98,662,y-112);ctx.stroke();
+          ctx.strokeStyle='rgba(246,239,229,.16)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(688,y-123);ctx.quadraticCurveTo(624,y-70,579,y-18);ctx.stroke();
+          ctx.restore();
+        }
+        body(current().body,895,'#fff',28,820);counter();
+      }
+      function template_c1s3(){
+        bg(C.cream);drawLogo();title(current().title,160,C.ink,60);
+        const y=592+current().visualShift;ctx.save();
+        ctx.strokeStyle='rgba(190,145,88,.56)';ctx.lineWidth=2.6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(825,y+8);ctx.bezierCurveTo(720,y-42,635,y+40,545,y);ctx.bezierCurveTo(450,y-36,360,y+30,255,y-12);ctx.stroke();
+        const stages=[{x:805,yy:y+5,label:'פתיחה',r:34,a:.27},{x:545,yy:y,label:'מתפתח',r:66,a:.21},{x:275,yy:y-8,label:'נשאר',r:48,a:.16}];
+        stages.forEach((s,i)=>{let rg=ctx.createRadialGradient(s.x,s.yy,1,s.x,s.yy,s.r*1.65);rg.addColorStop(0,'rgba(190,145,88,'+s.a+')');rg.addColorStop(1,'rgba(190,145,88,0)');ctx.fillStyle=rg;ctx.beginPath();ctx.arc(s.x,s.yy,s.r*1.65,0,Math.PI*2);ctx.fill();circle(s.x,s.yy,i===1?7:6.5,C.gold);text(s.label,s.x,s.yy+78,150,19,i===1?C.gold:C.muted,700)});
+        ctx.strokeStyle='rgba(190,145,88,.44)';ctx.lineWidth=1.6;[[675,y+1],[405,y-3]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0]+9,p[1]-6);ctx.lineTo(p[0],p[1]);ctx.lineTo(p[0]+9,p[1]+6);ctx.stroke()});ctx.restore();
+        body(current().body,835,C.ink,28,820);counter();
+      }
+      templates.c1s2=template_c1s2;templates.c1s3=template_c1s3;
+      render();
+    `);
+
+    const COPY={
+      c1s1:{title:['לפני שקונים, בודקים.','בוחרים לפני שקונים.','פחות ניחוש לפני קנייה.'],body:['דרך חכמה יותר לבחור בושם שמתאים לך.','בוחרים מדויק יותר, לפני שקונים.','פחות ניחושים. יותר התאמה.'],support:[],cta:[]},
+      c1s2:{title:['בושם משתנה על העור.','הריח משתנה על העור.','העור משנה את החוויה.'],body:['מה שמרשים בהתחלה, לא תמיד מרגיש נכון בהמשך.','הרושם הראשון לא מספר הכול.','מה שמרגיש נכון עכשיו יכול להשתנות בהמשך.'],support:[],cta:[]},
+      c1s3:{title:['הריסוס הראשון הוא רק ההתחלה.','מה שמריחים בהתחלה הוא רק שלב אחד.','כדי להבין בושם, צריך לתת לו זמן.'],body:['העור, מזג האוויר והזמן משנים איך הבושם מתפתח.','הבושם משתנה לאורך היום.','מה שמריחים עכשיו יכול להרגיש אחרת בהמשך.'],support:['פתיחה. התפתחות. מה שנשאר.','לא רק הפתיחה קובעת.','מה שנשאר חשוב לא פחות.'],cta:[]},
+      c1s4:{title:['רוצה לבדוק מה יכול להתאים לך?','רוצה כיוון מדויק יותר?','אפשר להתחיל מכאן.'],body:['מתחילים בכמה שאלות קצרות בוואטסאפ.','מתחילים בכמה שאלות קצרות.','כמה שאלות קצרות, ומקבלים כיוון.'],support:[],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
+      c2s1:{title:['לא עוד "נראה לי".\nמקבלים כיוון ברור.','לא רק המלצה.\nגם הסבר למה.','פחות ניחוש.\nיותר בהירות.'],body:['לא רק המלצה. גם הסבר למה.','מקבלים כיוון, וגם את הסיבה.','לא מנחשים. מבינים למה.'],support:[],cta:[]},
+      c2s2:{title:['כיוון מוביל שמתאים לך.','כיוון מוביל, ברור ומנומק.','מתחילים מהכיוון החזק ביותר.'],body:['כיוון נקי ומאסקי שמתחבר למה שאהבת.\nנוכחות עדינה שמורגשת בעיקר מקרוב.\nמתאים לשימוש יומיומי, אלגנטי ולא משתלט.','נקי, מאסקי וקרוב לעור.\nאלגנטי לשימוש יומיומי.','כיוון שמתאים למה שאהבת ולדרך שבה רצית שהבושם יורגש.'],support:['הציון משקף עד כמה הכיוון מתאים למה שסיפרת לנו.','הציון משקף את ההתאמה למה שסיפרת.','ציון התאמה המבוסס על מה שסיפרת לנו.'],cta:[]},
+      c2s3:{title:['כיוון נוסף להשוואה.','עוד כיוון, כדי להשוות נכון.','כיוון נוסף לבדיקת העדפה.'],body:['רענן וצלול יותר מהכיוון המוביל, כדי להבין מה מרגיש נכון יותר על העור.','רענן וצלול יותר, להשוואה על העור.','כיוון אחר שיעזור להבין מה באמת מרגיש נכון.'],support:['הכיוון נועד להשוואה, לא דירוג או עדיפות.','להשוואה, לא לדירוג.','המטרה היא להשוות, לא לדרג.'],cta:[]},
+      c2s4:{title:['לא רק מה מתאים לך.\nגם למה.','לא רק התוצאה.\nגם ההיגיון.','מבינים מה מתאים, וגם למה.'],body:['מה אהבת.\nאיך משתמשים בבושם.\nומה חשוב לך בבחירה.','מה אהבת.\nאיך משתמשים.\nמה חשוב לך.','ההמלצה מתחילה במה שסיפרת לנו.'],support:['כדי להבין מה שווה לנסות - ומה פחות.','כדי לדעת מה שווה לנסות.','פחות ניחוש, יותר סינון.'],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
+      c3s1:{title:['איך עובדת בדיקת ההתאמה?','איך זה עובד?','כך מתחילים.'],body:['פשוט יותר ממה שנדמה.','מתחילים בכמה שאלות קצרות.','כמה דקות, וזה מתחיל.'],support:[],cta:[]},
+      c3s2:{title:['כמה שאלות קצרות.','מתחילים בכמה שאלות.','שלב ראשון: להבין מה חשוב לך.'],body:['מה אהבת.\nאיך משתמשים בבושם.\nומה חשוב לך בבחירה.','מה אהבת.\nאיך משתמשים.\nמה חשוב לך.','כמה שאלות שממקדות את הבחירה.'],support:[],cta:[]},
+      c3s3:{title:['מקבלים כיוון ברור.','התוצאה: כיוון ברור.','פחות בלבול. יותר בהירות.'],body:['מה מתאים לך יותר.\nמה שווה להשוות.\nולמה.','מה מתאים.\nמה להשוות.\nולמה.','מקבלים כיוון ברור, לא רשימת אפשרויות.'],support:[],cta:[]},
+      c3s4:{title:['ואם רלוונטי - ערכת התנסות.','אם צריך - ממשיכים להתנסות.','השלב הבא: לבדוק על העור.'],body:['כדי לבדוק את הכיוונים על העור ולאורך זמן, לפני שמחליטים על בקבוק מלא.','בודקים על העור לפני בקבוק מלא.','מתנסים קודם. מחליטים אחר כך.'],support:[],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']}
+    };
+    const ids={title:'title',body:'body',support:'support',cta:'cta'};
+    const labels={title:'כותרת',body:'טקסט',support:'הבהרה',cta:'CTA'};
+    let activeField='body';
+
+    const contentDetails=[...d.querySelectorAll('details')].find(x=>x.querySelector('summary')&&x.querySelector('summary').textContent.trim()==='תוכן');
+    const studio=d.createElement('div');studio.className='copyStudio';studio.id='copyStudio';
+    studio.innerHTML='<div class="copyStudioTop"><strong>Copy Assist</strong><span class="copyHealth" id="copyHealth"></span></div><div class="fieldTabs" id="fieldTabs"></div><div class="suggestionBtns"><button data-i="0">מומלץ</button><button data-i="1">קצר</button><button data-i="2">ישיר</button></div><div class="copyPreview" id="copyPreview"></div><div class="copyRule">ההצעות שומרות על שפת המותג. הן לא מוחלות אוטומטית.</div>';
+    if(contentDetails)contentDetails.querySelector('.inside').appendChild(studio);
+    const tabs=studio.querySelector('#fieldTabs');Object.keys(ids).forEach(k=>{const b=d.createElement('button');b.textContent=labels[k];b.dataset.field=k;b.onclick=()=>{activeField=k;refreshStudio()};tabs.appendChild(b)});
+    studio.querySelectorAll('.suggestionBtns button').forEach(b=>b.onclick=()=>{const cur=app.current(),set=COPY[cur.template]&&COPY[cur.template][activeField]||[],val=set[Number(b.dataset.i)];if(val==null)return;cur[activeField]=val;const el=d.getElementById(ids[activeField]);if(el)el.value=val;app.save();app.render();refreshStudio()});
+
+    function lineCount(value,field){if(!value)return 0;try{return field==='title'?app.wrap(value,860,60*(app.current().titleScale/100),700).length:app.wrap(value,820,28*(app.current().bodyScale/100),500).length}catch(e){return value.split('\n').length}}
+    function refreshStudio(){
+      const cur=app.current(),set=COPY[cur.template]&&COPY[cur.template][activeField]||[];
+      tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.field===activeField));
+      studio.querySelectorAll('.suggestionBtns button').forEach((b,i)=>b.disabled=set[i]==null);
+      studio.querySelector('#copyPreview').textContent=set[0]?'מומלץ כרגע: '+set[0].replace(/\n/g,' / '):'אין צורך להוסיף תוכן בשדה הזה לשקופית הנוכחית.';
+      const t=lineCount(cur.title||'','title'),b=lineCount(cur.body||'','body');const titleOK=t<=2,bodyMax=['c2s2','c2s4','c3s2','c3s3'].includes(cur.template)?3:2,bodyOK=b<=bodyMax;const health=studio.querySelector('#copyHealth');health.textContent=titleOK&&bodyOK?'אורך תקין':('כותרת '+t+' · גוף '+b+' שורות');health.classList.toggle('warn',!(titleOK&&bodyOK));
+    }
+    ['title','body','support','cta'].forEach(id=>{const el=d.getElementById(id);if(el)el.addEventListener('input',()=>setTimeout(refreshStudio,0))});
+    const oldSetForm=app.setForm;app.setForm=function(){oldSetForm();refreshStudio()};
+
+    const badge=d.querySelector('.badge');if(badge)badge.textContent='PREVIEW v1.2.5';
+    const sub=d.querySelector('.sub');if(sub)sub.textContent='12 תבניות נעולות · Final Copy + Visual QA';
+    const warn=d.querySelector('.warn');if(warn)warn.innerHTML='<strong>v1.2.5:</strong> Heebo נשאר נעול. Copy Assist הורחב לכותרת, גוף, הבהרה ו־CTA. C1S2/C1S3 קיבלו פוליש ויזואלי אחרון.';
+    app.render();app.setForm();refreshStudio();
+  };
+  try{if(inner.contentWindow.document&&inner.contentWindow.document.readyState==='complete')setTimeout(boot,250);else inner.addEventListener('load',()=>setTimeout(boot,250),{once:true})}catch(e){inner.addEventListener('load',()=>setTimeout(boot,250),{once:true})}
+});
+</script>
+</body>
+</html>
