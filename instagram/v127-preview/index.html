@@ -12,37 +12,90 @@ iframe{display:block;width:100%;height:100%;border:0;background:#EDE9E2}
 </style>
 </head>
 <body>
-<iframe id="versionFrame" src="../v126-preview/?qa=127" allow="web-share" title="Sertavo Instagram Generator v1.2.7"></iframe>
+<iframe id="versionFrame" src="../v125-preview/?qa=127-final" allow="web-share" title="Sertavo Instagram Generator v1.2.7"></iframe>
 <script>
 const outer=document.getElementById('versionFrame');
 function findAppWindow(win){
   try{
     const d=win.document;
     if(d&&d.getElementById('body')&&typeof win.current==='function'&&typeof win.render==='function')return win;
-    for(const f of [...d.querySelectorAll('iframe')]){const found=findAppWindow(f.contentWindow);if(found)return found}
+    for(const frame of [...d.querySelectorAll('iframe')]){const found=findAppWindow(frame.contentWindow);if(found)return found}
   }catch(e){}
   return null;
 }
-function applyFix(attempt=0){
+function waitForApp(attempt=0){
   const app=findAppWindow(outer.contentWindow);
-  if(!app){if(attempt<180)setTimeout(()=>applyFix(attempt+1),100);return}
+  if(!app){if(attempt<160)setTimeout(()=>waitForApp(attempt+1),100);return}
   const d=app.document;
-  const old=d.getElementById('copyStudio');
-  const v126=d.getElementById('copyStudioV126');
-  if(!old||!v126){if(attempt<180)setTimeout(()=>applyFix(attempt+1),100);return}
-  if(!d.getElementById('v127FixStyle')){
-    const s=d.createElement('style');s.id='v127FixStyle';
-    s.textContent='#copyStudio,.copyAssist{display:none!important}#copyStudioV126{display:block!important}';
-    d.head.appendChild(s);
-  }
-  old.setAttribute('aria-hidden','true');
-  v126.removeAttribute('aria-hidden');
+  const badge=(d.querySelector('.badge')?.textContent||'').trim();
+  const v125Ready=!!d.getElementById('copyStudio')&&badge.includes('1.2.5');
+  if(!v125Ready){if(attempt<160)setTimeout(()=>waitForApp(attempt+1),100);return}
+  installV127(app);
+}
+function installV127(app){
+  const d=app.document;
+  if(d.getElementById('copyStudioV127'))return;
+  const oldStudio=d.getElementById('copyStudio');
+  if(oldStudio){oldStudio.style.display='none';oldStudio.setAttribute('aria-hidden','true')}
+  const css=d.createElement('style');css.id='v127Styles';css.textContent=`
+    .copyAssist,#copyStudio{display:none!important}
+    .copyStudioV127{margin:10px 0 2px;padding:12px;background:#F7FAFC;border:1px solid #DDE7EE;border-radius:12px}
+    .copyStudioTopV127{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px}
+    .copyStudioTitleV127{font-size:14px;font-weight:800;color:#164F7D;line-height:1.3}
+    .copyStudioHintV127{font-size:10.5px;color:#6B7A86;line-height:1.45;margin-bottom:10px}
+    .copyHealthV127{font-size:10.5px;border-radius:999px;padding:5px 8px;background:#EAF3F8;color:#31516B;white-space:nowrap}
+    .copyHealthV127.warn{background:#FFF1DE;color:#865D28}
+    .fieldTabsV127,.suggestionBtnsV127{display:grid;gap:6px}
+    .fieldTabsV127{grid-template-columns:repeat(4,1fr);margin-bottom:8px}
+    .suggestionBtnsV127{grid-template-columns:repeat(3,1fr)}
+    .fieldTabsV127 button,.suggestionBtnsV127 button{border:1px solid #D9E0E5;background:#fff;color:#21394F;border-radius:8px;padding:9px 4px;font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    .fieldTabsV127 button.active{background:#0C2038;color:#fff;border-color:#0C2038}
+    .suggestionBtnsV127 button.active{border-color:#C99A5A;background:#FFF4E2;color:#704C20;box-shadow:inset 0 0 0 1px rgba(201,154,90,.15)}
+    .suggestionBtnsV127 button:disabled{opacity:.32;cursor:not-allowed;background:#F4F5F6}
+    .copyPreviewV127{font-size:11px;color:#4F606D;line-height:1.48;margin-top:9px;min-height:31px;padding:8px 9px;background:#fff;border-radius:8px;border:1px solid #E5EAEE}
+    .copyRuleV127{font-size:10px;color:#7A8792;line-height:1.45;margin-top:7px}
+    .copyExampleV127{font-size:10px;color:#805A2C;background:#FFF7E9;border:1px solid #F0D7AE;border-radius:8px;padding:7px 8px;margin-top:8px;line-height:1.45}
+    .copyToastV127{font-size:10.5px;color:#31516B;margin-top:7px;min-height:16px}
+  `;d.head.appendChild(css);
+  const COPY={
+    c1s1:{title:['לפני שקונים, בודקים.','בוחרים לפני שקונים.','פחות ניחוש לפני קנייה.'],body:['דרך חכמה יותר לבחור בושם שמתאים לך.','בוחרים מדויק יותר, לפני שקונים.','פחות ניחושים. יותר התאמה.'],support:[],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
+    c1s2:{title:['בושם משתנה על העור.','הריח משתנה על העור.','העור משנה את החוויה.'],body:['מה שמרשים בהתחלה, לא תמיד מרגיש נכון בהמשך.','הרושם הראשון לא מספר הכול.','מה שמרגיש נכון עכשיו יכול להשתנות בהמשך.'],support:['לכן לא מספיק רק רושם ראשוני.','הרושם הראשון הוא רק חלק מהתמונה.','כדאי לתת לבושם זמן.'],cta:[]},
+    c1s3:{title:['הריסוס הראשון הוא רק ההתחלה.','מה שמריחים בהתחלה הוא רק שלב אחד.','כדי להבין בושם, צריך לתת לו זמן.'],body:['העור, מזג האוויר והזמן משנים איך הבושם מתפתח.','הבושם משתנה לאורך היום.','מה שמריחים עכשיו יכול להרגיש אחרת בהמשך.'],support:['פתיחה. התפתחות. מה שנשאר.','לא רק הפתיחה קובעת.','מה שנשאר חשוב לא פחות.'],cta:[]},
+    c1s4:{title:['רוצה לבדוק מה יכול להתאים לך?','רוצה כיוון מדויק יותר?','אפשר להתחיל מכאן.'],body:['מתחילים בכמה שאלות קצרות בוואטסאפ.','מתחילים בכמה שאלות קצרות.','כמה שאלות קצרות, ומקבלים כיוון.'],support:['בדיקת התאמה אישית לפני קנייה.','מתחילים קצר ומתקדמים רק אם רלוונטי.','פשוט, קצר וממוקד.'],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
+    c2s1:{title:['לא עוד "נראה לי".\nמקבלים כיוון ברור.','לא רק המלצה.\nגם הסבר למה.','פחות ניחוש.\nיותר בהירות.'],body:['לא רק המלצה. גם הסבר למה.','מקבלים כיוון, וגם את הסיבה.','לא מנחשים. מבינים למה.'],support:['הכיוון נשען על מה שסיפרת לנו.','ההמלצה מגיעה עם הסבר.','פחות ניחוש, יותר סינון.'],cta:[]},
+    c2s2:{title:['כיוון מוביל שמתאים לך.','כיוון מוביל, ברור ומנומק.','מתחילים מהכיוון החזק ביותר.'],body:['כיוון שמתאים למה שסיפרת ולדרך שבה רצית שהבושם יורגש.','כיוון שמתאים למה שסיפרת.','הכיוון המוביל מבוסס על מה שסיפרת לנו.'],support:['הציון משקף עד כמה הכיוון מתאים למה שסיפרת לנו.','הציון משקף את ההתאמה למה שסיפרת.','ציון התאמה המבוסס על מה שסיפרת לנו.'],cta:[]},
+    c2s3:{title:['כיוון נוסף להשוואה.','עוד כיוון, כדי להשוות נכון.','כיוון נוסף לבדיקת העדפה.'],body:['כיוון שונה מעט, כדי להבין מה מרגיש נכון יותר על העור.','כיוון נוסף להשוואה על העור.','משווים כיוון נוסף כדי לחדד העדפה.'],support:['הכיוון נועד להשוואה, לא דירוג או עדיפות.','להשוואה, לא לדירוג.','המטרה היא להשוות, לא לדרג.'],cta:[]},
+    c2s4:{title:['לא רק מה מתאים לך.\nגם למה.','לא רק התוצאה.\nגם ההיגיון.','מבינים מה מתאים, וגם למה.'],body:['מה אהבת.\nאיך משתמשים בבושם.\nומה חשוב לך בבחירה.','מה אהבת.\nאיך משתמשים.\nמה חשוב לך.','ההמלצה מתחילה במה שסיפרת לנו.'],support:['כדי להבין מה שווה לנסות - ומה פחות.','כדי לדעת מה שווה לנסות.','פחות ניחוש, יותר סינון.'],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
+    c3s1:{title:['איך עובדת בדיקת ההתאמה?','איך זה עובד?','כך מתחילים.'],body:['פשוט יותר ממה שנדמה.','מתחילים בכמה שאלות קצרות.','כמה שאלות קצרות, וזה מתחיל.'],support:['כמה צעדים קצרים, ותמונה ברורה יותר.','קצר, פשוט וממוקד.','מתחילים מהעדפות שלך.'],cta:[]},
+    c3s2:{title:['כמה שאלות קצרות.','מתחילים בכמה שאלות.','שלב ראשון: להבין מה חשוב לך.'],body:['מה אהבת.\nאיך משתמשים בבושם.\nומה חשוב לך בבחירה.','מה אהבת.\nאיך משתמשים.\nמה חשוב לך.','כמה שאלות שממקדות את הבחירה.'],support:['כדי להבין מה באמת שווה לנסות.','כדי למקד את הכיוון.','רק מה שרלוונטי לבחירה.'],cta:[]},
+    c3s3:{title:['מקבלים כיוון ברור.','התוצאה: כיוון ברור.','פחות בלבול. יותר בהירות.'],body:['מה מתאים לך יותר.\nמה שווה להשוות.\nולמה.','מה מתאים.\nמה להשוות.\nולמה.','מקבלים כיוון ברור, לא רשימת אפשרויות.'],support:['לא רק תשובה. גם הסבר.','כיוון מוביל ועוד נקודת השוואה.','ממוקד במה ששווה לבדוק.'],cta:[]},
+    c3s4:{title:['ואם רלוונטי - ערכת התנסות.','אם רלוונטי - ממשיכים להתנסות.','השלב הבא: לבדוק על העור.'],body:['כדי לבדוק את הכיוונים על העור ולאורך זמן, לפני שמחליטים על בקבוק מלא.','בודקים על העור לפני בקבוק מלא.','מתנסים קודם. מחליטים אחר כך.'],support:['התנסות אמיתית לפני החלטה.','בודקים לאורך זמן, לא רק בריסוס ראשון.','רק אם זה רלוונטי עבורך.'],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']}
+  };
+  const ids={title:'title',body:'body',support:'support',cta:'cta'};
+  const labels={title:'כותרת',body:'טקסט',support:'הבהרה',cta:'CTA'};
+  const variantLabels=['מומלץ','קצר','ישיר'];
+  let activeField='body';
+  function normalizeDash(value){return String(value||'').replace(/[\u2013\u2014\u2212]/g,'-')}
+  function same(a,b){return normalizeDash(a).replace(/\r/g,'').trim()===normalizeDash(b).replace(/\r/g,'').trim()}
+  function getSet(){const cur=app.current();return COPY[cur.template]&&COPY[cur.template][activeField]||[]}
+  function lineCount(value,field){if(!value)return 0;try{if(field==='title')return app.wrap(value,860,60*(app.current().titleScale/100),700).length;if(field==='body')return app.wrap(value,820,28*(app.current().bodyScale/100),500).length;return value.split('\n').length}catch(e){return value.split('\n').length}}
+  function fieldHealth(){const cur=app.current(),value=String(cur[activeField]||'');if(!value)return{ok:true,text:'השדה ריק'};if(activeField==='title'){const lines=lineCount(value,'title');return{ok:lines<=2,text:lines<=2?'אורך תקין':lines+' שורות - מומלץ לקצר'}}if(activeField==='body'){const lines=lineCount(value,'body'),max=['c2s2','c2s4','c3s2','c3s3'].includes(cur.template)?3:2;return{ok:lines<=max,text:lines<=max?'אורך תקין':lines+' שורות - מומלץ לקצר'}}if(activeField==='support')return{ok:value.length<=75,text:value.length<=75?'אורך תקין':value.length+' תווים - מומלץ לקצר'};return{ok:value.length<=36,text:value.length<=36?'אורך תקין':value.length+' תווים - מומלץ לקצר'}}
+  const contentDetails=[...d.querySelectorAll('details')].find(x=>x.querySelector('summary')&&x.querySelector('summary').textContent.trim()==='תוכן');
+  const studio=d.createElement('div');studio.className='copyStudioV127';studio.id='copyStudioV127';studio.innerHTML='<div class="copyStudioTopV127"><div><div class="copyStudioTitleV127">עוזר ניסוח</div></div><span class="copyHealthV127" id="copyHealthV127"></span></div><div class="copyStudioHintV127">בחר שדה, ואז בחר נוסח. לחיצה מחליפה רק את השדה הנבחר ומעדכנת מיד את השקופית.</div><div class="fieldTabsV127" id="fieldTabsV127"></div><div class="suggestionBtnsV127" id="suggestionBtnsV127"></div><div class="copyPreviewV127" id="copyPreviewV127"></div><div class="copyToastV127" id="copyToastV127"></div><div class="copyExampleV127" id="copyExampleV127" hidden></div><div class="copyRuleV127">הנוסחים הם הצעות עריכה בלבד. הם לא משנים את התוכן בלי לחיצה שלך.</div>';
+  if(contentDetails)contentDetails.querySelector('.inside').appendChild(studio);else d.body.appendChild(studio);
+  const tabs=studio.querySelector('#fieldTabsV127');
+  Object.keys(ids).forEach(k=>{const b=d.createElement('button');b.type='button';b.textContent=labels[k];b.dataset.field=k;b.addEventListener('click',()=>{activeField=k;refreshStudio()});tabs.appendChild(b)});
+  const variantBox=studio.querySelector('#suggestionBtnsV127');
+  variantLabels.forEach((label,i)=>{const b=d.createElement('button');b.type='button';b.textContent=label;b.dataset.i=String(i);b.addEventListener('click',()=>{const set=getSet(),val=set[i];if(val==null)return;const clean=normalizeDash(val),cur=app.current();cur[activeField]=clean;const el=d.getElementById(ids[activeField]);if(el)el.value=clean;if(typeof app.save==='function')app.save();app.render();studio.querySelector('#copyToastV127').textContent='הנוסח הוחל על '+labels[activeField]+'.';refreshStudio();setTimeout(()=>{const t=studio.querySelector('#copyToastV127');if(t)t.textContent=''},1400)});variantBox.appendChild(b)});
+  function refreshStudio(){const cur=app.current(),set=getSet(),value=String(cur[activeField]||'');tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.field===activeField));variantBox.querySelectorAll('button').forEach((b,i)=>{const val=set[i];b.disabled=val==null;b.classList.toggle('active',val!=null&&same(value,val));b.title=val==null?'אין הצעה לשדה הזה בשקופית הנוכחית':'החל נוסח '+variantLabels[i]});const preview=studio.querySelector('#copyPreviewV127');preview.textContent=set[0]?'הנוסח המומלץ לשדה הזה: '+normalizeDash(set[0]).replace(/\n/g,' / '):'אין צורך להוסיף תוכן בשדה הזה בשקופית הנוכחית.';const healthData=fieldHealth(),health=studio.querySelector('#copyHealthV127');health.textContent=healthData.text;health.classList.toggle('warn',!healthData.ok);const example=studio.querySelector('#copyExampleV127');if(['c2s2','c2s3'].includes(cur.template)){example.hidden=false;example.textContent='הערה פנימית: תיאורי ריח ספציפיים כמו "מאסקי", "רענן" או "צלול" הם דוגמה בלבד. יש להשתמש בהם רק כשהם מתאימים למקרה שמוצג.'}else example.hidden=true}
+  ['title','body','support','cta'].forEach(id=>{const el=d.getElementById(id);if(el){el.addEventListener('input',()=>setTimeout(refreshStudio,0));el.addEventListener('blur',()=>{const clean=normalizeDash(el.value);if(clean!==el.value){el.value=clean;app.current()[id]=clean;if(typeof app.save==='function')app.save();app.render()}refreshStudio()})}});
+  const oldSetForm=app.setForm;if(typeof oldSetForm==='function')app.setForm=function(){oldSetForm();refreshStudio()};
   const badge=d.querySelector('.badge');if(badge)badge.textContent='PREVIEW v1.2.7';
   const sub=d.querySelector('.sub');if(sub)sub.textContent='12 תבניות נעולות - Final UX + Copy QA';
-  const warn=d.querySelector('.warn');if(warn)warn.innerHTML='<strong>v1.2.7:</strong> תוקנה התנגשות האתחול בין שכבות ה-preview. עוזר הניסוח v1.2.6 הוא כעת הממשק הפעיל והגרסה מוצגת נכון.';
-  try{if(typeof app.setForm==='function')app.setForm();app.render()}catch(e){}
+  const warn=d.querySelector('.warn');if(warn)warn.innerHTML='<strong>v1.2.7:</strong> תוקנה טעינת עוזר הניסוח על גבי v1.2.5. הכפתורים פעילים, הגרסה מוצגת נכון, Heebo נשאר נעול ושלוש רמות הגודל נשארו בשליטה מבוקרת.';
+  app.render();if(typeof app.setForm==='function')app.setForm();refreshStudio();
 }
-outer.addEventListener('load',()=>setTimeout(()=>applyFix(),1100));
+outer.addEventListener('load',()=>setTimeout(()=>waitForApp(),250));
 </script>
 </body>
 </html>
