@@ -2,213 +2,41 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sertavo Posts">
 <meta name="theme-color" content="#0C2038">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https://fonts.gstatic.com; img-src 'self' data: blob:; style-src 'self' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'self'; upgrade-insecure-requests">
+<base href="../">
 <title>Sertavo Instagram Generator v1.2.8 Preview</title>
-<style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#EDE9E2}
-iframe{display:block;width:100%;height:100%;border:0;background:#EDE9E2}
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="style.css?v=128">
+<link rel="stylesheet" href="v128-preview/preview.css?v=128">
 </head>
 <body>
-<iframe id="versionFrame" src="../v125-preview/?base=128" allow="web-share" title="Sertavo Instagram Generator v1.2.8"></iframe>
-<script>
-const outer=document.getElementById('versionFrame');
-let installTimer=null;
-
-function findAppWindow(win){
-  try{
-    const d=win.document;
-    if(d && typeof win.current==='function' && typeof win.render==='function' && d.getElementById('body')) return win;
-    for(const frame of [...d.querySelectorAll('iframe')]){
-      const found=findAppWindow(frame.contentWindow);
-      if(found) return found;
-    }
-  }catch(e){}
-  return null;
-}
-
-function normalizeDash(value){return String(value||'').replace(/[\u2013\u2014\u2212]/g,'-')}
-
-function tryInstall(){
-  const app=findAppWindow(outer.contentWindow);
-  if(!app) return false;
-  const d=app.document;
-  if(d.getElementById('copyStudioV128')){
-    if(installTimer){clearInterval(installTimer);installTimer=null}
-    return true;
-  }
-  const oldStudio=d.getElementById('copyStudio');
-  if(!oldStudio) return false;
-  try{
-    installV128(app);
-    if(installTimer){clearInterval(installTimer);installTimer=null}
-    return true;
-  }catch(err){
-    console.error('Sertavo v1.2.8 install failed',err);
-    return false;
-  }
-}
-
-function installV128(app){
-  const d=app.document;
-  const oldStudio=d.getElementById('copyStudio');
-  if(oldStudio) oldStudio.remove();
-  d.querySelectorAll('.copyAssist').forEach(el=>el.style.setProperty('display','none','important'));
-
-  if(!d.getElementById('v128Styles')){
-    const css=d.createElement('style');
-    css.id='v128Styles';
-    css.textContent=`
-      .copyStudioV128{margin:10px 0 2px;padding:12px;background:#F7FAFC;border:1px solid #DDE7EE;border-radius:12px}
-      .copyStudioTopV128{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:5px}
-      .copyStudioTitleV128{font-size:14px;font-weight:800;color:#164F7D;line-height:1.3}
-      .copyStudioHintV128{font-size:10.5px;color:#6B7A86;line-height:1.45;margin-bottom:10px}
-      .copyHealthV128{font-size:10.5px;border-radius:999px;padding:5px 8px;background:#EAF3F8;color:#31516B;white-space:nowrap}
-      .copyHealthV128.warn{background:#FFF1DE;color:#865D28}
-      .fieldTabsV128,.suggestionBtnsV128{display:grid;gap:6px}
-      .fieldTabsV128{grid-template-columns:repeat(4,1fr);margin-bottom:8px}
-      .suggestionBtnsV128{grid-template-columns:repeat(3,1fr)}
-      .fieldTabsV128 button,.suggestionBtnsV128 button{appearance:none;-webkit-appearance:none;border:1px solid #D9E0E5;background:#fff;color:#21394F;border-radius:8px;padding:10px 4px;font-size:11px;font-weight:800;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:2}
-      .fieldTabsV128 button.active{background:#0C2038;color:#fff;border-color:#0C2038}
-      .suggestionBtnsV128 button.active{border-color:#C99A5A;background:#FFF4E2;color:#704C20;box-shadow:inset 0 0 0 1px rgba(201,154,90,.18)}
-      .suggestionBtnsV128 button:disabled{opacity:.32;cursor:not-allowed;background:#F4F5F6}
-      .copyPreviewV128{font-size:11px;color:#4F606D;line-height:1.48;margin-top:9px;min-height:31px;padding:8px 9px;background:#fff;border-radius:8px;border:1px solid #E5EAEE}
-      .copyRuleV128{font-size:10px;color:#7A8792;line-height:1.45;margin-top:7px}
-      .copyExampleV128{font-size:10px;color:#805A2C;background:#FFF7E9;border:1px solid #F0D7AE;border-radius:8px;padding:7px 8px;margin-top:8px;line-height:1.45}
-      .copyToastV128{font-size:10.5px;color:#31516B;margin-top:7px;min-height:16px;font-weight:700}
-    `;
-    d.head.appendChild(css);
-  }
-
-  const COPY={
-    c1s1:{title:['לפני שקונים, בודקים.','בוחרים לפני שקונים.','פחות ניחוש לפני קנייה.'],body:['דרך חכמה יותר לבחור בושם שמתאים לך.','בוחרים מדויק יותר, לפני שקונים.','פחות ניחושים. יותר התאמה.'],support:[],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
-    c1s2:{title:['בושם משתנה על העור.','הריח משתנה על העור.','העור משנה את החוויה.'],body:['מה שמרשים בהתחלה, לא תמיד מרגיש נכון בהמשך.','הרושם הראשון לא מספר הכול.','מה שמרגיש נכון עכשיו יכול להשתנות בהמשך.'],support:['לכן לא מספיק רק רושם ראשוני.','הרושם הראשון הוא רק חלק מהתמונה.','כדאי לתת לבושם זמן.'],cta:[]},
-    c1s3:{title:['הריסוס הראשון הוא רק ההתחלה.','מה שמריחים בהתחלה הוא רק שלב אחד.','כדי להבין בושם, צריך לתת לו זמן.'],body:['העור, מזג האוויר והזמן משנים איך הבושם מתפתח.','הבושם משתנה לאורך היום.','מה שמריחים עכשיו יכול להרגיש אחרת בהמשך.'],support:['פתיחה. התפתחות. מה שנשאר.','לא רק הפתיחה קובעת.','מה שנשאר חשוב לא פחות.'],cta:[]},
-    c1s4:{title:['רוצה לבדוק מה יכול להתאים לך?','רוצה כיוון מדויק יותר?','אפשר להתחיל מכאן.'],body:['מתחילים בכמה שאלות קצרות בוואטסאפ.','מתחילים בכמה שאלות קצרות.','כמה שאלות קצרות, ומקבלים כיוון.'],support:['בדיקת התאמה אישית לפני קנייה.','מתחילים קצר ומתקדמים רק אם רלוונטי.','פשוט, קצר וממוקד.'],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
-    c2s1:{title:['לא עוד "נראה לי".\nמקבלים כיוון ברור.','לא רק המלצה.\nגם הסבר למה.','פחות ניחוש.\nיותר בהירות.'],body:['לא רק המלצה. גם הסבר למה.','מקבלים כיוון, וגם את הסיבה.','לא מנחשים. מבינים למה.'],support:['הכיוון נשען על מה שסיפרת לנו.','ההמלצה מגיעה עם הסבר.','פחות ניחוש, יותר סינון.'],cta:[]},
-    c2s2:{title:['כיוון מוביל שמתאים לך.','כיוון מוביל, ברור ומנומק.','מתחילים מהכיוון החזק ביותר.'],body:['כיוון שמתאים למה שסיפרת ולדרך שבה רצית שהבושם יורגש.','כיוון שמתאים למה שסיפרת.','הכיוון המוביל מבוסס על מה שסיפרת לנו.'],support:['הציון משקף עד כמה הכיוון מתאים למה שסיפרת לנו.','הציון משקף את ההתאמה למה שסיפרת.','ציון התאמה המבוסס על מה שסיפרת לנו.'],cta:[]},
-    c2s3:{title:['כיוון נוסף להשוואה.','עוד כיוון, כדי להשוות נכון.','כיוון נוסף לבדיקת העדפה.'],body:['כיוון שונה מעט, כדי להבין מה מרגיש נכון יותר על העור.','כיוון נוסף להשוואה על העור.','משווים כיוון נוסף כדי לחדד העדפה.'],support:['הכיוון נועד להשוואה, לא דירוג או עדיפות.','להשוואה, לא לדירוג.','המטרה היא להשוות, לא לדרג.'],cta:[]},
-    c2s4:{title:['לא רק מה מתאים לך.\nגם למה.','לא רק התוצאה.\nגם ההיגיון.','מבינים מה מתאים, וגם למה.'],body:['מה אהבת.\nאיך משתמשים בבושם.\nומה חשוב לך בבחירה.','מה אהבת.\nאיך משתמשים.\nמה חשוב לך.','ההמלצה מתחילה במה שסיפרת לנו.'],support:['כדי להבין מה שווה לנסות - ומה פחות.','כדי לדעת מה שווה לנסות.','פחות ניחוש, יותר סינון.'],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']},
-    c3s1:{title:['איך עובדת בדיקת ההתאמה?','איך זה עובד?','כך מתחילים.'],body:['פשוט יותר ממה שנדמה.','מתחילים בכמה שאלות קצרות.','כמה שאלות קצרות, וזה מתחיל.'],support:['כמה צעדים קצרים, ותמונה ברורה יותר.','קצר, פשוט וממוקד.','מתחילים מהעדפות שלך.'],cta:[]},
-    c3s2:{title:['כמה שאלות קצרות.','מתחילים בכמה שאלות.','שלב ראשון: להבין מה חשוב לך.'],body:['מה אהבת.\nאיך משתמשים בבושם.\nומה חשוב לך בבחירה.','מה אהבת.\nאיך משתמשים.\nמה חשוב לך.','כמה שאלות שממקדות את הבחירה.'],support:['כדי להבין מה באמת שווה לנסות.','כדי למקד את הכיוון.','רק מה שרלוונטי לבחירה.'],cta:[]},
-    c3s3:{title:['מקבלים כיוון ברור.','התוצאה: כיוון ברור.','פחות בלבול. יותר בהירות.'],body:['מה מתאים לך יותר.\nמה שווה להשוות.\nולמה.','מה מתאים.\nמה להשוות.\nולמה.','מקבלים כיוון ברור, לא רשימת אפשרויות.'],support:['לא רק תשובה. גם הסבר.','כיוון מוביל ועוד נקודת השוואה.','ממוקד במה ששווה לבדוק.'],cta:[]},
-    c3s4:{title:['ואם רלוונטי - ערכת התנסות.','אם רלוונטי - ממשיכים להתנסות.','השלב הבא: לבדוק על העור.'],body:['כדי לבדוק את הכיוונים על העור ולאורך זמן, לפני שמחליטים על בקבוק מלא.','בודקים על העור לפני בקבוק מלא.','מתנסים קודם. מחליטים אחר כך.'],support:['התנסות אמיתית לפני החלטה.','בודקים לאורך זמן, לא רק בריסוס ראשון.','רק אם זה רלוונטי עבורך.'],cta:['בדיקת התאמה - לינק בביו','להתחלת בדיקת ההתאמה - לינק בביו','מתחילים בלינק שבביו']}
-  };
-
-  const ids={title:'title',body:'body',support:'support',cta:'cta'};
-  const labels={title:'כותרת',body:'טקסט',support:'הבהרה',cta:'CTA'};
-  const variantLabels=['מומלץ','קצר','ישיר'];
-  let activeField='body';
-
-  const contentDetails=[...d.querySelectorAll('details')].find(x=>x.querySelector('summary')&&x.querySelector('summary').textContent.trim()==='תוכן');
-  const studio=d.createElement('div');
-  studio.className='copyStudioV128';
-  studio.id='copyStudioV128';
-  studio.innerHTML='<div class="copyStudioTopV128"><div class="copyStudioTitleV128">עוזר ניסוח</div><span class="copyHealthV128" id="copyHealthV128"></span></div><div class="copyStudioHintV128">בחר שדה, ואז בחר נוסח. לחיצה מחליפה רק את השדה הנבחר ומעדכנת מיד את השקופית.</div><div class="fieldTabsV128" id="fieldTabsV128"></div><div class="suggestionBtnsV128" id="suggestionBtnsV128"></div><div class="copyPreviewV128" id="copyPreviewV128"></div><div class="copyToastV128" id="copyToastV128"></div><div class="copyExampleV128" id="copyExampleV128" hidden></div><div class="copyRuleV128">הנוסחים הם הצעות עריכה בלבד. הם לא משנים את התוכן בלי לחיצה שלך.</div>';
-  if(contentDetails) contentDetails.querySelector('.inside').appendChild(studio); else d.body.appendChild(studio);
-
-  const tabs=studio.querySelector('#fieldTabsV128');
-  const variantBox=studio.querySelector('#suggestionBtnsV128');
-
-  function getSet(){const cur=app.current();return COPY[cur.template]&&COPY[cur.template][activeField]||[]}
-  function same(a,b){return normalizeDash(a).replace(/\r/g,'').trim()===normalizeDash(b).replace(/\r/g,'').trim()}
-  function lineCount(value,field){
-    if(!value)return 0;
-    try{
-      if(field==='title')return app.wrap(value,860,60*(app.current().titleScale/100),700).length;
-      if(field==='body')return app.wrap(value,820,28*(app.current().bodyScale/100),500).length;
-      return value.split('\n').length;
-    }catch(e){return value.split('\n').length}
-  }
-  function fieldHealth(){
-    const cur=app.current(),value=String(cur[activeField]||'');
-    if(!value)return{ok:true,text:'השדה ריק'};
-    if(activeField==='title'){
-      const lines=lineCount(value,'title');return{ok:lines<=2,text:lines<=2?'אורך תקין':lines+' שורות - מומלץ לקצר'};
-    }
-    if(activeField==='body'){
-      const lines=lineCount(value,'body'),max=['c2s2','c2s4','c3s2','c3s3'].includes(cur.template)?3:2;
-      return{ok:lines<=max,text:lines<=max?'אורך תקין':lines+' שורות - מומלץ לקצר'};
-    }
-    if(activeField==='support')return{ok:value.length<=75,text:value.length<=75?'אורך תקין':value.length+' תווים - מומלץ לקצר'};
-    return{ok:value.length<=36,text:value.length<=36?'אורך תקין':value.length+' תווים - מומלץ לקצר'};
-  }
-
-  Object.keys(ids).forEach(k=>{
-    const b=d.createElement('button');b.type='button';b.textContent=labels[k];b.dataset.field=k;
-    b.addEventListener('click',ev=>{ev.preventDefault();activeField=k;refreshStudio()});
-    tabs.appendChild(b);
-  });
-
-  variantLabels.forEach((label,i)=>{
-    const b=d.createElement('button');b.type='button';b.textContent=label;b.dataset.i=String(i);
-    const applyVariant=ev=>{
-      ev.preventDefault();
-      const set=getSet(),val=set[i];if(val==null)return;
-      const clean=normalizeDash(val),cur=app.current();
-      cur[activeField]=clean;
-      const el=d.getElementById(ids[activeField]);
-      if(el){el.value=clean;el.dispatchEvent(new Event('input',{bubbles:true}));}
-      if(typeof app.save==='function')app.save();
-      app.render();
-      const toast=studio.querySelector('#copyToastV128');toast.textContent='הנוסח הוחל על '+labels[activeField]+'.';
-      refreshStudio();
-      setTimeout(()=>{if(toast)toast.textContent=''},1300);
-    };
-    b.addEventListener('click',applyVariant);
-    variantBox.appendChild(b);
-  });
-
-  function refreshStudio(){
-    const cur=app.current(),set=getSet(),value=String(cur[activeField]||'');
-    tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.field===activeField));
-    variantBox.querySelectorAll('button').forEach((b,i)=>{
-      const val=set[i];b.disabled=val==null;b.classList.toggle('active',val!=null&&same(value,val));
-    });
-    const preview=studio.querySelector('#copyPreviewV128');
-    preview.textContent=set[0]?'הנוסח המומלץ לשדה הזה: '+normalizeDash(set[0]).replace(/\n/g,' / '):'אין צורך להוסיף תוכן בשדה הזה בשקופית הנוכחית.';
-    const healthData=fieldHealth(),health=studio.querySelector('#copyHealthV128');
-    health.textContent=healthData.text;health.classList.toggle('warn',!healthData.ok);
-    const example=studio.querySelector('#copyExampleV128');
-    if(['c2s2','c2s3'].includes(cur.template)){
-      example.hidden=false;
-      example.textContent='הערה פנימית: תיאורי ריח ספציפיים כמו "מאסקי", "רענן" או "צלול" הם דוגמה בלבד. יש להשתמש בהם רק כשהם מתאימים למקרה שמוצג.';
-    }else example.hidden=true;
-  }
-
-  ['title','body','support','cta'].forEach(id=>{
-    const el=d.getElementById(id);if(!el)return;
-    el.addEventListener('input',()=>setTimeout(refreshStudio,0));
-    el.addEventListener('blur',()=>{
-      const clean=normalizeDash(el.value);
-      if(clean!==el.value){el.value=clean;app.current()[id]=clean;if(typeof app.save==='function')app.save();app.render();}
-      refreshStudio();
-    });
-  });
-
-  const oldSetForm=app.setForm;
-  if(typeof oldSetForm==='function'){
-    app.setForm=function(){oldSetForm();refreshStudio()};
-  }
-
-  const badge=d.querySelector('.badge');if(badge)badge.textContent='PREVIEW v1.2.8';
-  const sub=d.querySelector('.sub');if(sub)sub.textContent='12 תבניות נעולות - Final UX + Copy QA';
-  const warn=d.querySelector('.warn');if(warn)warn.innerHTML='<strong>v1.2.8:</strong> עוזר הניסוח נטען כעת רק לאחר שמנוע העריכה מוכן. הכפתורים מחילים נוסח בפועל, הגרסה מוצגת נכון ו-Heebo נשאר נעול.';
-  app.render();
-  if(typeof app.setForm==='function')app.setForm();
-  refreshStudio();
-}
-
-function startInstaller(){
-  tryInstall();
-  if(!installTimer) installTimer=setInterval(tryInstall,500);
-}
-outer.addEventListener('load',startInstaller);
-window.addEventListener('pageshow',startInstaller);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)startInstaller()});
-setTimeout(startInstaller,200);
-</script>
+<div class="app">
+<main class="stage" id="stage">
+  <div class="previewBar"><button id="fullPreview">תצוגה מלאה</button></div>
+  <canvas id="cv" width="1080" height="1350"></canvas>
+</main>
+<aside class="panel">
+  <div class="header"><div><h1>Sertavo Instagram Generator</h1><div class="sub">12 תבניות נעולות - Final UX + Copy QA</div></div><span class="badge">PREVIEW v1.2.8</span></div>
+  <div class="section"><h2>בחירת פוסט</h2><div class="tabs" id="carouselTabs"></div><div class="slides" id="slideTabs"></div><div class="note" id="role"></div></div>
+  <div class="section"><h2>תוכן</h2><label>כותרת</label><textarea id="title"></textarea><label>טקסט משני</label><textarea id="body"></textarea><label>שורת הבהרה</label><textarea id="support"></textarea><label>CTA</label><input id="cta"></div>
+  <div class="section"><h2>תמונה לשקופית</h2><label class="fileBtn">בחר תמונה מה-Photos / Files<input id="heroFile" type="file" accept="image/png,image/jpeg,image/webp"></label><div class="tiny" id="imageHint"></div><div class="miniBtns"><button id="clearHero">הסר תמונה</button></div></div>
+  <div class="section"><h2>לוגו</h2><div class="logoBox"><img id="logoPreview" alt="לוגו פעיל"><div class="meta"><strong id="logoStatus">הלוגו המעודכן מובנה במחולל</strong><div class="tiny">PNG שקוף נשמר גם אחרי רענון.</div><div class="miniBtns"><label class="fileBtn small">החלף<input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="restoreLogo">שחזר מובנה</button></div></div></div></div>
+  <div class="section" id="specialSection"><h2>פרטי השקופית</h2><div id="specialFields"></div></div>
+  <div class="section"><details><summary>התאמות מתקדמות</summary><div class="row"><div><label>גודל כותרת %</label><input id="titleScale" type="number" min="75" max="130"></div><div><label>גודל גוף %</label><input id="bodyScale" type="number" min="75" max="130"></div></div><div class="row"><div><label>הזזת כותרת Y</label><input id="titleShift" type="number" min="-160" max="160"></div><div><label>הזזת ויזואל Y</label><input id="visualShift" type="number" min="-220" max="220"></div></div><label>תמונת רקע מלאה, אופציונלי</label><label class="fileBtn">בחר רקע<input id="bgFile" type="file" accept="image/png,image/jpeg,image/webp"></label><div class="row"><div><label>כהות רקע %</label><input id="overlay" type="number" min="0" max="75"></div><div><label>זום רקע %</label><input id="bgZoom" type="number" min="80" max="220"></div></div><div class="miniBtns"><button id="clearBg">הסר רקע</button></div><label class="switch"><input id="showCounter" type="checkbox"> הצג מספור 1/4</label></details></div>
+  <div class="note warn"><strong>v1.2.8:</strong> גרסה עצמאית ללא שכבות iframe. Heebo נעול, עוזר הניסוח פעיל והשליטה בגודל נשארת מבוקרת.</div>
+  <div class="actions"><button class="action gold" id="share">שתף PNG נוכחי</button><button class="action" id="download">הורד PNG</button><button class="action gray" id="saveProject">שמור פרויקט</button><label class="fileBtn actionLike">טען פרויקט<input id="loadProject" type="file" accept="application/json,.json"></label><button class="action gray" id="resetSlide">איפוס שקופית</button><button class="action gray" id="resetAll">איפוס הכל</button></div><div class="status" id="status">נשמר אוטומטית במכשיר.</div>
+</aside>
+</div>
+<script src="templates.js?v=128"></script>
+<script src="app.js?v=128"></script>
+<script src="v128-preview/preview.js?v=128"></script>
 </body>
 </html>
