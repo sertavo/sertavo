@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = '1.2.10';
+  const VERSION = '1.2.11';
   const applyVersion = () => {
     const badge = document.querySelector('.badge');
     if (badge && badge.textContent !== `v${VERSION}`) {
@@ -8,7 +8,7 @@
     document.title = `Sertavo Instagram Generator v${VERSION}`;
     const warn = document.querySelector('.note.warn');
     if (warn && !warn.innerHTML.includes(`v${VERSION}`)) {
-      warn.innerHTML = `<strong>v${VERSION}:</strong> הלוגו המובנה, מרווחי הכותרות, האייקונים ורכיב הציון עברו פוליש. בקרת האורך החיה נשארה פעילה.`;
+      warn.innerHTML = `<strong>v${VERSION}:</strong> רכיב הציון אחיד, הלב ממורכז אופטית, והפיסוק בשורות הקצרות עבר ניקוי. בקרת האורך החיה נשארה פעילה.`;
     }
   };
 
