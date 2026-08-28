@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="theme-color" content="#0C2038">
+<title>Sertavo Instagram Generator v1.2.7 Preview</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#EDE9E2}
+iframe{display:block;width:100%;height:100%;border:0;background:#EDE9E2}
+</style>
+</head>
+<body>
+<iframe id="versionFrame" src="../v126-preview/?qa=127" allow="web-share" title="Sertavo Instagram Generator v1.2.7"></iframe>
+<script>
+const outer=document.getElementById('versionFrame');
+function findAppWindow(win){
+  try{
+    const d=win.document;
+    if(d&&d.getElementById('body')&&typeof win.current==='function'&&typeof win.render==='function')return win;
+    for(const f of [...d.querySelectorAll('iframe')]){const found=findAppWindow(f.contentWindow);if(found)return found}
+  }catch(e){}
+  return null;
+}
+function applyFix(attempt=0){
+  const app=findAppWindow(outer.contentWindow);
+  if(!app){if(attempt<180)setTimeout(()=>applyFix(attempt+1),100);return}
+  const d=app.document;
+  const old=d.getElementById('copyStudio');
+  const v126=d.getElementById('copyStudioV126');
+  if(!old||!v126){if(attempt<180)setTimeout(()=>applyFix(attempt+1),100);return}
+  if(!d.getElementById('v127FixStyle')){
+    const s=d.createElement('style');s.id='v127FixStyle';
+    s.textContent='#copyStudio,.copyAssist{display:none!important}#copyStudioV126{display:block!important}';
+    d.head.appendChild(s);
+  }
+  old.setAttribute('aria-hidden','true');
+  v126.removeAttribute('aria-hidden');
+  const badge=d.querySelector('.badge');if(badge)badge.textContent='PREVIEW v1.2.7';
+  const sub=d.querySelector('.sub');if(sub)sub.textContent='12 תבניות נעולות - Final UX + Copy QA';
+  const warn=d.querySelector('.warn');if(warn)warn.innerHTML='<strong>v1.2.7:</strong> תוקנה התנגשות האתחול בין שכבות ה-preview. עוזר הניסוח v1.2.6 הוא כעת הממשק הפעיל והגרסה מוצגת נכון.';
+  try{if(typeof app.setForm==='function')app.setForm();app.render()}catch(e){}
+}
+outer.addEventListener('load',()=>setTimeout(()=>applyFix(),1100));
+</script>
+</body>
+</html>
