@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="theme-color" content="#0C2038">
+<title>Sertavo Instagram Generator v1.2.3 Preview</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#EDE9E2}
+iframe{display:block;width:100%;height:100%;border:0;background:#EDE9E2}
+</style>
+</head>
+<body>
+<iframe id="appFrame" src="../v122-preview/" allow="web-share" title="Sertavo Instagram Generator v1.2.3"></iframe>
+<script>
+const frame=document.getElementById('appFrame');
+frame.addEventListener('load',()=>{
+  const w=frame.contentWindow,d=w.document;
+  const patch=String.raw`
+function template_c1s2(){
+  bg(C.navy);drawLogo();title(current().title,165,'#fff',64);
+  const y=615+current().visualShift;
+  if(heroImg){photo(heroImg,245,390,590,475,34)}else{
+    ctx.save();
+    // quiet skin horizon: a single soft contour rather than a literal arm
+    ctx.beginPath();ctx.moveTo(285,y+145);ctx.bezierCurveTo(390,y+112,690,y+112,795,y+145);
+    ctx.strokeStyle='rgba(246,239,229,.50)';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+    // contact glow
+    let g=ctx.createRadialGradient(540,y+135,3,540,y+135,54);
+    g.addColorStop(0,'rgba(190,145,88,.34)');g.addColorStop(1,'rgba(190,145,88,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(540,y+135,54,0,Math.PI*2);ctx.fill();
+    circle(540,y+135,9,C.gold);
+    // spray mist arriving at the skin
+    const mist=[[650,-98,4,.72],[628,-73,3,.54],[607,-53,2.5,.44],[588,-34,2,.34],[570,-17,1.8,.28]];
+    mist.forEach(m=>circle(m[0],y+m[1],m[2],'rgba(246,239,229,'+m[3]+')'));
+    ctx.strokeStyle='rgba(246,239,229,.26)';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(680,y-118);ctx.quadraticCurveTo(635,y-76,577,y-12);ctx.stroke();
+    // three scent trails opening from one contact point
+    const trails=[
+      {ex:430,ey:y-108,c:'rgba(190,145,88,.78)',lw:2.3},
+      {ex:540,ey:y-142,c:'rgba(246,239,229,.30)',lw:1.35},
+      {ex:665,ey:y-86,c:'rgba(190,145,88,.48)',lw:1.8}
+    ];
+    trails.forEach((t,i)=>{ctx.strokeStyle=t.c;ctx.lineWidth=t.lw;ctx.beginPath();ctx.moveTo(540,y+126);if(i===0)ctx.bezierCurveTo(508,y+62,462,y-8,t.ex,t.ey);if(i===1)ctx.bezierCurveTo(548,y+48,553,y-34,t.ex,t.ey);if(i===2)ctx.bezierCurveTo(588,y+66,624,y+4,t.ex,t.ey);ctx.stroke()});
+    circle(430,y-108,3.5,'rgba(190,145,88,.70)');circle(665,y-86,3,'rgba(190,145,88,.48)');
+    ctx.restore();
+    text('על העור',540,y+177,260,18,C.gold,700);
+  }
+  body(current().body,925,'#fff',28,680);counter();
+}
+function template_c1s3(){
+  bg(C.cream);drawLogo();title(current().title,160,C.ink,60);
+  const y=610+current().visualShift;
+  // one continuous progression, read right-to-left: opening → developing → remaining
+  line(318,y,762,y,'rgba(190,145,88,.34)',1.5);
+  const stages=[
+    {x:720,label:'פתיחה',r:24,alpha:.12},
+    {x:540,label:'מתפתח',r:42,alpha:.085},
+    {x:360,label:'נשאר',r:62,alpha:.055}
+  ];
+  stages.forEach((s,i)=>{
+    let rg=ctx.createRadialGradient(s.x,y,2,s.x,y,s.r*1.55);
+    rg.addColorStop(0,'rgba(190,145,88,'+(s.alpha*1.8)+')');rg.addColorStop(1,'rgba(190,145,88,0)');
+    ctx.fillStyle=rg;ctx.beginPath();ctx.arc(s.x,y,s.r*1.55,0,Math.PI*2);ctx.fill();
+    circle(s.x,y,6,C.gold);
+    circle(s.x,y,s.r,null,'rgba(190,145,88,.42)',1.15);
+    text(s.label,s.x,y+58+(i*4),150,17,i===1?C.gold:C.muted,700);
+  });
+  // direction cue without arrows or time labels
+  ctx.save();ctx.strokeStyle='rgba(190,145,88,.42)';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(635,y-1);ctx.lineTo(625,y-7);ctx.moveTo(635,y-1);ctx.lineTo(625,y+5);ctx.moveTo(455,y-1);ctx.lineTo(445,y-7);ctx.moveTo(455,y-1);ctx.lineTo(445,y+5);ctx.stroke();ctx.restore();
+  body(current().body,835,C.ink,28,720);counter();
+}
+templates.c1s2=template_c1s2;
+templates.c1s3=template_c1s3;
+render();`;
+  try{
+    w.eval(patch);
+    const badge=d.querySelector('.badge'); if(badge) badge.textContent='PREVIEW v1.2.3';
+    const sub=d.querySelector('.sub'); if(sub) sub.textContent='12 תבניות נעולות · Final visual QA';
+    const warn=d.querySelector('.warn'); if(warn) warn.innerHTML='<strong>v1.2.3:</strong> עיצוב סופי ממוקד לקרוסלה 1 שקופיות 2–3. שאר המערכת נשארה נעולה.';
+  }catch(e){console.error('v1.2.3 patch failed',e)}
+});
+</script>
+</body>
+</html>
