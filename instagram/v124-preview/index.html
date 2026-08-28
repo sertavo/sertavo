@@ -37,13 +37,11 @@ frame.addEventListener('load',()=>{
   `;
   d.head.appendChild(uiStyle);
   const patch=String.raw`
-// v1.2.4 brand typography: Heebo is locked as the public-facing typeface.
-function font(s,w=500){return \`${'${w}'} ${'${s}'}px Heebo, Arial, sans-serif\`}
+function font(s,w=500){return w+' '+s+'px Heebo, Arial, sans-serif'}
 function title(t,y,color,size=62){return text(t,540,y+current().titleShift,860,size*(current().titleScale/100),color,700,1.17)}
 function body(t,y,color,size=31,maxW=720){return text(t,540,y,maxW,size*(current().bodyScale/100),color,500,1.42)}
 
-// Isolate preview state from v1.2.2 while carrying current work forward once.
-try{const p=JSON.parse(localStorage.getItem('sertavoIGv124')||'null');if(p?.carousels)project=p}catch(e){}
+try{const p=JSON.parse(localStorage.getItem('sertavoIGv124')||'null');if(p&&p.carousels)project=p}catch(e){}
 const oldC1S2='מה שמרשים ברגע הראשון לא תמיד מרגיש נכון אחרי כמה שעות.';
 const oldC1S3='העור, מזג האוויר, אופי השימוש והזמן משפיעים על איך שהבושם מתפתח.';
 const oldC1S3b='העור, מזג האוויר והזמן משפיעים על איך שהבושם מתפתח.';
@@ -56,31 +54,19 @@ function template_c1s2(){
   const y=565+current().visualShift;
   if(heroImg){photo(heroImg,245,390,590,475,34)}else{
     ctx.save();
-    // A macro skin surface anchored as a material field, not a floating arm/blob.
     let skin=ctx.createLinearGradient(185,y+95,895,y+250);
     skin.addColorStop(0,'#D5A17E');skin.addColorStop(.48,'#E2B18D');skin.addColorStop(1,'#C98F6D');
-    ctx.beginPath();
-    ctx.moveTo(175,y+125);
-    ctx.bezierCurveTo(340,y+82,690,y+78,905,y+128);
-    ctx.lineTo(905,y+265);
-    ctx.bezierCurveTo(720,y+228,360,y+238,175,y+270);
-    ctx.closePath();ctx.fillStyle=skin;ctx.fill();
-    // restrained skin texture
+    ctx.beginPath();ctx.moveTo(175,y+125);ctx.bezierCurveTo(340,y+82,690,y+78,905,y+128);ctx.lineTo(905,y+265);ctx.bezierCurveTo(720,y+228,360,y+238,175,y+270);ctx.closePath();ctx.fillStyle=skin;ctx.fill();
     const pores=[[325,183,2.2],[382,210,1.7],[452,164,1.5],[612,201,2],[700,173,1.6],[760,219,1.8]];
     pores.forEach(p=>circle(p[0],y+p[1],p[2],'rgba(112,67,47,.18)'));
-    // contact point and soft bloom
     let bloom=ctx.createRadialGradient(540,y+124,2,540,y+124,62);
     bloom.addColorStop(0,'rgba(255,247,235,.52)');bloom.addColorStop(.35,'rgba(190,145,88,.25)');bloom.addColorStop(1,'rgba(190,145,88,0)');
     ctx.fillStyle=bloom;ctx.beginPath();ctx.arc(540,y+124,62,0,Math.PI*2);ctx.fill();circle(540,y+124,7,'#F7EBDD');
-    // spray mist arriving diagonally, instantly readable as fragrance application
     const mist=[[680,-88,4,.68],[653,-66,3.4,.58],[625,-45,2.8,.48],[598,-25,2.3,.38],[575,-8,1.8,.30]];
-    mist.forEach(m=>circle(m[0],y+m[1],m[2],\`rgba(246,239,229,${'${m[3]}'} )\`));
+    mist.forEach(m=>circle(m[0],y+m[1],m[2],'rgba(246,239,229,'+m[3]+')'));
     ctx.strokeStyle='rgba(246,239,229,.20)';ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(705,y-108);ctx.quadraticCurveTo(635,y-57,564,y+10);ctx.stroke();
-    // two soft scent wisps after contact, deliberately organic rather than chart-like
-    ctx.lineCap='round';
-    ctx.strokeStyle='rgba(246,239,229,.34)';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(530,y+112);ctx.bezierCurveTo(505,y+55,514,y+6,486,y-32);ctx.bezierCurveTo(462,y-64,475,y-93,455,y-116);ctx.stroke();
-    ctx.strokeStyle='rgba(190,145,88,.58)';ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(550,y+112);ctx.bezierCurveTo(578,y+62,572,y+8,607,y-28);ctx.bezierCurveTo(632,y-55,622,y-84,646,y-107);ctx.stroke();
-    ctx.restore();
+    ctx.lineCap='round';ctx.strokeStyle='rgba(246,239,229,.34)';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(530,y+112);ctx.bezierCurveTo(505,y+55,514,y+6,486,y-32);ctx.bezierCurveTo(462,y-64,475,y-93,455,y-116);ctx.stroke();
+    ctx.strokeStyle='rgba(190,145,88,.58)';ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(550,y+112);ctx.bezierCurveTo(578,y+62,572,y+8,607,y-28);ctx.bezierCurveTo(632,y-55,622,y-84,646,y-107);ctx.stroke();ctx.restore();
     text('נקודת ריסוס על העור',540,y+315,330,17,'rgba(255,255,255,.64)',600);
   }
   body(current().body,935,'#fff',27,820);counter();
@@ -88,27 +74,11 @@ function template_c1s2(){
 
 function template_c1s3(){
   bg(C.cream);drawLogo();title(current().title,160,C.ink,60);
-  const y=610+current().visualShift;
-  ctx.save();
-  // One continuous right-to-left scent evolution path.
-  ctx.strokeStyle='rgba(190,145,88,.48)';ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();
-  ctx.moveTo(785,y+18);ctx.bezierCurveTo(690,y-34,625,y+30,545,y);ctx.bezierCurveTo(460,y-30,395,y+22,300,y-10);ctx.stroke();
-  const stages=[
-    {x:770,yy:y+12,label:'פתיחה',r:30,a:.24},
-    {x:545,yy:y,label:'מתפתח',r:58,a:.18},
-    {x:315,yy:y-7,label:'נשאר',r:42,a:.13}
-  ];
-  stages.forEach((s,i)=>{
-    let rg=ctx.createRadialGradient(s.x,s.yy,1,s.x,s.yy,s.r*1.55);
-    rg.addColorStop(0,\`rgba(190,145,88,${'${s.a}'} )\`);rg.addColorStop(1,'rgba(190,145,88,0)');
-    ctx.fillStyle=rg;ctx.beginPath();ctx.arc(s.x,s.yy,s.r*1.55,0,Math.PI*2);ctx.fill();
-    circle(s.x,s.yy,i===0?7:6,C.gold);
-    text(s.label,s.x,s.yy+72,150,17,i===1?C.gold:C.muted,700);
-  });
-  // tiny directional chevrons embedded in the path, not infographic arrows
-  ctx.strokeStyle='rgba(190,145,88,.38)';ctx.lineWidth=1.4;
-  [[655,y+4],[430,y-1]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0]+8,p[1]-5);ctx.lineTo(p[0],p[1]);ctx.lineTo(p[0]+8,p[1]+5);ctx.stroke()});
-  ctx.restore();
+  const y=610+current().visualShift;ctx.save();
+  ctx.strokeStyle='rgba(190,145,88,.48)';ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(785,y+18);ctx.bezierCurveTo(690,y-34,625,y+30,545,y);ctx.bezierCurveTo(460,y-30,395,y+22,300,y-10);ctx.stroke();
+  const stages=[{x:770,yy:y+12,label:'פתיחה',r:30,a:.24},{x:545,yy:y,label:'מתפתח',r:58,a:.18},{x:315,yy:y-7,label:'נשאר',r:42,a:.13}];
+  stages.forEach((s,i)=>{let rg=ctx.createRadialGradient(s.x,s.yy,1,s.x,s.yy,s.r*1.55);rg.addColorStop(0,'rgba(190,145,88,'+s.a+')');rg.addColorStop(1,'rgba(190,145,88,0)');ctx.fillStyle=rg;ctx.beginPath();ctx.arc(s.x,s.yy,s.r*1.55,0,Math.PI*2);ctx.fill();circle(s.x,s.yy,i===0?7:6,C.gold);text(s.label,s.x,s.yy+72,150,17,i===1?C.gold:C.muted,700)});
+  ctx.strokeStyle='rgba(190,145,88,.38)';ctx.lineWidth=1.4;[[655,y+4],[430,y-1]].forEach(p=>{ctx.beginPath();ctx.moveTo(p[0]+8,p[1]-5);ctx.lineTo(p[0],p[1]);ctx.lineTo(p[0]+8,p[1]+5);ctx.stroke()});ctx.restore();
   body(current().body,835,C.ink,27,820);counter();
 }
 templates.c1s2=template_c1s2;templates.c1s3=template_c1s3;
@@ -129,49 +99,20 @@ const COPY_SUGGESTIONS={
 };
 const MAX_LINES={c1s1:1,c1s2:1,c1s3:1,c1s4:1,c2s1:1,c2s2:3,c2s3:2,c2s4:3,c3s1:1,c3s2:3,c3s3:3,c3s4:2};
 
-function installCopyAssist(){
-  const bodyEl=d.getElementById('body'); if(!bodyEl||d.getElementById('copyAssist'))return;
-  const box=d.createElement('div');box.id='copyAssist';box.className='copyAssist';
-  box.innerHTML='<div class="copyAssistHead"><strong>נוסח מומלץ לשקופית</strong><span class="copyLength" id="copyLength"></span></div><div class="copyBtns"><button class="recommended" data-copy="0">מומלץ</button><button data-copy="1">קצר</button><button data-copy="2">ישיר</button></div>';
-  bodyEl.insertAdjacentElement('afterend',box);
-  box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const arr=COPY_SUGGESTIONS[current().template]||[];const val=arr[Number(b.dataset.copy)];if(val!=null){current().body=val;d.getElementById('body').value=val;save();render();updateCopyAssist()}});
-}
-function updateCopyAssist(){
-  const el=d.getElementById('copyLength');if(!el)return;
-  const s=current(),max=MAX_LINES[s.template]||2;
-  const lines=wrap(s.body,820,27*(s.bodyScale/100),500).length||1;
-  el.textContent=lines<=max?\`${'${lines}'} ${'${lines===1?\'שורה\':\'שורות\'}'} · באורך המומלץ\`:\`${'${lines}'} שורות · מומלץ לקצר\`;
-  el.classList.toggle('long',lines>max);
-}
+function installCopyAssist(){const bodyEl=d.getElementById('body');if(!bodyEl||d.getElementById('copyAssist'))return;const box=d.createElement('div');box.id='copyAssist';box.className='copyAssist';box.innerHTML='<div class="copyAssistHead"><strong>נוסח מומלץ לשקופית</strong><span class="copyLength" id="copyLength"></span></div><div class="copyBtns"><button class="recommended" data-copy="0">מומלץ</button><button data-copy="1">קצר</button><button data-copy="2">ישיר</button></div>';bodyEl.insertAdjacentElement('afterend',box);box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const arr=COPY_SUGGESTIONS[current().template]||[];const val=arr[Number(b.dataset.copy)];if(val!=null){current().body=val;d.getElementById('body').value=val;save();render();updateCopyAssist()}})}
+function updateCopyAssist(){const el=d.getElementById('copyLength');if(!el)return;const s=current(),max=MAX_LINES[s.template]||2;const lines=wrap(s.body,820,27*(s.bodyScale/100),500).length||1;el.textContent=lines<=max?(lines+' '+(lines===1?'שורה':'שורות')+' · באורך המומלץ'):(lines+' שורות · מומלץ לקצר');el.classList.toggle('long',lines>max)}
 
-function installTypography(){
-  if(d.getElementById('brandTypography'))return;
-  const adv=[...d.querySelectorAll('details')].find(x=>x.querySelector('summary')?.textContent.trim()==='מתקדם');if(!adv)return;
-  const det=d.createElement('details');det.id='brandTypography';
-  det.innerHTML='<summary>טיפוגרפיה</summary><div class="inside"><div class="typeLock"><div><strong>Heebo</strong><div><span>פונט המותג</span></div></div><span>נעול לשמירת שפה אחידה</span></div><label>גודל כותרת</label><div class="typePresets" data-kind="title"><button data-v="92">קומפקטי</button><button data-v="100">מותג</button><button data-v="108">גדול</button></div><label>גודל טקסט</label><div class="typePresets" data-kind="body"><button data-v="92">קומפקטי</button><button data-v="100">מותג</button><button data-v="108">גדול</button></div><div class="typeNote">הפונט עצמו נעול. שליטה מדויקת באחוזים נשארת תחת “מתקדם” למקרים חריגים.</div></div>';
-  adv.parentNode.insertBefore(det,adv);
-  det.querySelectorAll('.typePresets button').forEach(b=>b.onclick=()=>{const kind=b.parentElement.dataset.kind,key=kind==='title'?'titleScale':'bodyScale';current()[key]=Number(b.dataset.v);d.getElementById(key).value=current()[key];save();render();updateTypography();updateCopyAssist()});
-}
-function updateTypography(){
-  const det=d.getElementById('brandTypography');if(!det)return;
-  det.querySelectorAll('.typePresets').forEach(g=>{const key=g.dataset.kind==='title'?'titleScale':'bodyScale',v=Number(current()[key]||100);g.querySelectorAll('button').forEach(b=>b.classList.toggle('active',Number(b.dataset.v)===v))});
-}
+function installTypography(){if(d.getElementById('brandTypography'))return;const adv=[...d.querySelectorAll('details')].find(x=>x.querySelector('summary')&&x.querySelector('summary').textContent.trim()==='מתקדם');if(!adv)return;const det=d.createElement('details');det.id='brandTypography';det.innerHTML='<summary>טיפוגרפיה</summary><div class="inside"><div class="typeLock"><div><strong>Heebo</strong><div><span>פונט המותג</span></div></div><span>נעול לשמירת שפה אחידה</span></div><label>גודל כותרת</label><div class="typePresets" data-kind="title"><button data-v="92">קומפקטי</button><button data-v="100">מותג</button><button data-v="108">גדול</button></div><label>גודל טקסט</label><div class="typePresets" data-kind="body"><button data-v="92">קומפקטי</button><button data-v="100">מותג</button><button data-v="108">גדול</button></div><div class="typeNote">הפונט עצמו נעול. שליטה מדויקת באחוזים נשארת תחת “מתקדם” למקרים חריגים.</div></div>';adv.parentNode.insertBefore(det,adv);det.querySelectorAll('.typePresets button').forEach(b=>b.onclick=()=>{const kind=b.parentElement.dataset.kind,key=kind==='title'?'titleScale':'bodyScale';current()[key]=Number(b.dataset.v);d.getElementById(key).value=current()[key];save();render();updateTypography();updateCopyAssist()})}
+function updateTypography(){const det=d.getElementById('brandTypography');if(!det)return;det.querySelectorAll('.typePresets').forEach(g=>{const key=g.dataset.kind==='title'?'titleScale':'bodyScale',v=Number(current()[key]||100);g.querySelectorAll('button').forEach(b=>b.classList.toggle('active',Number(b.dataset.v)===v))})}
 
-const baseSetForm=setForm;
-setForm=function(){baseSetForm();updateCopyAssist();updateTypography()};
-installCopyAssist();installTypography();
-const bodyInput=d.getElementById('body');bodyInput.addEventListener('input',()=>setTimeout(updateCopyAssist,0));
-
-const badge=d.querySelector('.badge');if(badge)badge.textContent='PREVIEW v1.2.4';
-const sub=d.querySelector('.sub');if(sub)sub.textContent='12 תבניות נעולות · Heebo + Copy Assist';
-const warn=d.querySelector('.warn');if(warn)warn.innerHTML='<strong>v1.2.4:</strong> Heebo נעול כפונט המותג, נוסחים מומלצים וחיווי אורך נוספו, ו־C1S2/C1S3 קיבלו איטרציה סופית.';
-render();setForm();
+const baseSetForm=setForm;setForm=function(){baseSetForm();updateCopyAssist();updateTypography()};installCopyAssist();installTypography();d.getElementById('body').addEventListener('input',()=>setTimeout(updateCopyAssist,0));
+const badge=d.querySelector('.badge');if(badge)badge.textContent='PREVIEW v1.2.4';const sub=d.querySelector('.sub');if(sub)sub.textContent='12 תבניות נעולות · Heebo + Copy Assist';const warn=d.querySelector('.warn');if(warn)warn.innerHTML='<strong>v1.2.4:</strong> Heebo נעול כפונט המותג, נוסחים מומלצים וחיווי אורך נוספו, ו־C1S2/C1S3 קיבלו איטרציה סופית.';render();setForm();
 `;
   try{
     w.eval(patch);
     d.body.style.fontFamily="'Heebo',Arial,sans-serif";
     const rerender=()=>{try{w.eval('render();updateCopyAssist();updateTypography();')}catch(e){}};
-    if(d.fonts?.load){d.fonts.load('500 28px Heebo').then(rerender).catch(()=>{})}
+    if(d.fonts&&d.fonts.load)d.fonts.load('500 28px Heebo').then(rerender).catch(()=>{});
     fontLink.onload=rerender;
   }catch(e){console.error('v1.2.4 patch failed',e)}
 });
