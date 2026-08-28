@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = '1.2.12';
+  const VERSION = '1.2.13';
   const applyVersion = () => {
     const badge = document.querySelector('.badge');
     if (badge && badge.textContent !== `v${VERSION}`) {
@@ -8,7 +8,7 @@
     document.title = `Sertavo Instagram Generator v${VERSION}`;
     const warn = document.querySelector('.note.warn');
     if (warn && !warn.innerHTML.includes(`v${VERSION}`)) {
-      warn.innerHTML = `<strong>v${VERSION}:</strong> הושלם פוליש לפני פרסום: מוקאפ הווטסאפ קיבל פרופורציות של טלפון, רכיב הציון נשאר אחיד, והמחולל מזהיר לפני ייצוא שקופית ערכה ללא צילום אמיתי.`;
+      warn.innerHTML = `<strong>v${VERSION}:</strong> הושלם QA לפני פרסום: מוקאפ הווטסאפ נראה כטלפון, רכיב הציון אחיד, קיימת אזהרה לפני ייצוא שקופית ערכה ללא צילום אמיתי, ובאייפון פעולות השמירה מסומנות לפי היעד בפועל.`;
     }
   };
 
