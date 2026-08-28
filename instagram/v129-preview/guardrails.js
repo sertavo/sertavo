@@ -1,4 +1,13 @@
 (() => {
+  const VERSION='1.2.9';
+  const badge=document.querySelector('.badge');
+  if(badge) badge.textContent=`PREVIEW v${VERSION}`;
+  const sub=document.querySelector('.sub');
+  if(sub) sub.textContent='12 תבניות נעולות - Final UX + Copy QA';
+  const versionNote=document.querySelector('.note.warn');
+  if(versionNote) versionNote.innerHTML='<strong>v1.2.9:</strong> נוספה בקרת אורך חיה. טקסט ארוך לא נחתך אוטומטית - המחולל מזהיר כשהניסוח מתחיל לפגוע בהיררכיה של השקופית.';
+  document.title=`Sertavo Instagram Generator v${VERSION} Preview`;
+
   const measureCtx=document.createElement('canvas').getContext('2d');
   const FIELDS=['title','body','support','cta'];
   const RULES={
