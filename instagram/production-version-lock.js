@@ -1,12 +1,12 @@
 (() => {
-  const VERSION = '1.2.14';
+  const VERSION = '1.2.15';
   const applyVersion = () => {
     const badge = document.querySelector('.badge');
     if (badge && badge.textContent !== `v${VERSION}`) badge.textContent = `v${VERSION}`;
     document.title = `Sertavo Instagram Generator v${VERSION}`;
     const warn = document.querySelector('.note.warn');
     if (warn && !warn.innerHTML.includes(`v${VERSION}`)) {
-      warn.innerHTML = `<strong>v${VERSION}:</strong> הושלם פוליש למוקאפ המובייל: יחס צר וגבוה יותר, מסגרת דקה יותר וממשק שיחה אמין יותר. רכיב הציון נשאר אחיד, קיימת אזהרה לפני ייצוא שקופית ערכה ללא צילום אמיתי, ובאייפון פעולות השמירה מסומנות לפי היעד בפועל.`;
+      warn.innerHTML = `<strong>v${VERSION}:</strong> ננעל פוליש פרה-פרסום: C1S1 קיבל היררכיית כותרת חזקה יותר, C1S2 עבר להמחשה ברורה יותר של בושם על העור, ומוקאפ הטלפון עודכן למבנה מודרני עם ממשק סטטוס מתאים לעברית - שעה מימין, קליטה/Wi-Fi וסוללה מלאה משמאל.`;
     }
   };
 
@@ -20,7 +20,7 @@
 
   const loadEnhancements = () => {
     loadScriptOnce('ios-export-ux-1213.js?v=1213-prod1', 'data-ios-export-ux', '1');
-    loadScriptOnce('design-polish-1214.js?v=1214-prod1', 'data-phone-polish-1214', '1');
+    loadScriptOnce('design-polish-1215.js?v=1215-prod1', 'data-phone-polish-1215', '1');
   };
 
   applyVersion();
