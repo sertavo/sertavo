@@ -1,12 +1,12 @@
 (() => {
-  const VERSION = '1.2.15';
+  const VERSION = '1.2.16';
   const applyVersion = () => {
     const badge = document.querySelector('.badge');
     if (badge && badge.textContent !== `v${VERSION}`) badge.textContent = `v${VERSION}`;
     document.title = `Sertavo Instagram Generator v${VERSION}`;
     const warn = document.querySelector('.note.warn');
     if (warn && !warn.innerHTML.includes(`v${VERSION}`)) {
-      warn.innerHTML = `<strong>v${VERSION}:</strong> ננעל פוליש פרה-פרסום: C1S1 קיבל היררכיית כותרת חזקה יותר, C1S2 עבר להמחשה ברורה יותר של בושם על העור, ומוקאפ הטלפון עודכן למבנה מודרני עם ממשק סטטוס מתאים לעברית - שעה מימין, קליטה/Wi-Fi וסוללה מלאה משמאל.`;
+      warn.innerHTML = `<strong>v${VERSION}:</strong> C1S2 ננעל עם מסגרת זהב שקטה ודקה יותר סביב התמונה, בלי לשנות את התמונה, הקרופ או שאר הקרוסלה.`;
     }
   };
 
@@ -21,6 +21,7 @@
   const loadEnhancements = () => {
     loadScriptOnce('ios-export-ux-1213.js?v=1213-prod1', 'data-ios-export-ux', '1');
     loadScriptOnce('design-polish-1215.js?v=1215-prod1', 'data-phone-polish-1215', '1');
+    loadScriptOnce('frame-polish-1216.js?v=1216-prod1', 'data-frame-polish-1216', '1');
   };
 
   applyVersion();
