@@ -1,12 +1,12 @@
 (() => {
-  const VERSION = '1.2.18';
+  const VERSION = '1.2.19';
   const applyVersion = () => {
     const badge = document.querySelector('.badge');
     if (badge && badge.textContent !== `v${VERSION}`) badge.textContent = `v${VERSION}`;
     document.title = `Sertavo Instagram Generator v${VERSION}`;
     const warn = document.querySelector('.note.warn');
     if (warn && !warn.innerHTML.includes(`v${VERSION}`)) {
-      warn.innerHTML = `<strong>v${VERSION}:</strong> קרוסלה 2 קיבלה פוליש ממוקד: C2S3 מבהיר ויזואלית את ההבדל בין כיוון מוביל לכיוון נוסף להשוואה, ו-C2S4 הוסר ממנו הקו הדקורטיבי שמתחת לכותרת תוך שמירת קו ההפרדה הפונקציונלי.`;
+      warn.innerHTML = `<strong>v${VERSION}:</strong> קרוסלה 3 שקף 4 משתמש כעת כברירת מחדל בוויזואל הערכה הפתוחה עם שתי דוגמיות, רקע שמנת ו-SELECTED FOR YOU, במקום האיור הזמני.`;
     }
   };
 
@@ -24,6 +24,7 @@
     loadScriptOnce('frame-polish-1216.js?v=1216-prod1', 'data-frame-polish-1216', '1');
     loadScriptOnce('title-rule-polish-1217.js?v=1217-prod1', 'data-title-rule-polish-1217', '1');
     loadScriptOnce('carousel2-polish-1218.js?v=1218-prod1', 'data-carousel2-polish-1218', '1');
+    loadScriptOnce('c3s4-kit-1219.js?v=1219-prod1', 'data-c3s4-kit-1219', '1');
   };
 
   applyVersion();
