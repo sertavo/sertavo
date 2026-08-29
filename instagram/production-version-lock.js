@@ -1,12 +1,12 @@
 (() => {
-  const VERSION = '1.2.17';
+  const VERSION = '1.2.18';
   const applyVersion = () => {
     const badge = document.querySelector('.badge');
     if (badge && badge.textContent !== `v${VERSION}`) badge.textContent = `v${VERSION}`;
     document.title = `Sertavo Instagram Generator v${VERSION}`;
     const warn = document.querySelector('.note.warn');
     if (warn && !warn.innerHTML.includes(`v${VERSION}`)) {
-      warn.innerHTML = `<strong>v${VERSION}:</strong> קרוסלה 1 ננעלה בשפה אחידה ונקייה יותר: הקווים הדקורטיביים מתחת לכותרות בשקפים 1 ו-2 הוסרו, בעוד הדגשות זהב פונקציונליות נשמרו.`;
+      warn.innerHTML = `<strong>v${VERSION}:</strong> קרוסלה 2 קיבלה פוליש ממוקד: C2S3 מבהיר ויזואלית את ההבדל בין כיוון מוביל לכיוון נוסף להשוואה, ו-C2S4 הוסר ממנו הקו הדקורטיבי שמתחת לכותרת תוך שמירת קו ההפרדה הפונקציונלי.`;
     }
   };
 
@@ -23,6 +23,7 @@
     loadScriptOnce('design-polish-1215.js?v=1215-prod1', 'data-phone-polish-1215', '1');
     loadScriptOnce('frame-polish-1216.js?v=1216-prod1', 'data-frame-polish-1216', '1');
     loadScriptOnce('title-rule-polish-1217.js?v=1217-prod1', 'data-title-rule-polish-1217', '1');
+    loadScriptOnce('carousel2-polish-1218.js?v=1218-prod1', 'data-carousel2-polish-1218', '1');
   };
 
   applyVersion();
