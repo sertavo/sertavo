@@ -1,12 +1,12 @@
 (() => {
-  const VERSION = '1.2.21';
+  const VERSION = '1.2.22';
   const applyVersion = () => {
     const badge = document.querySelector('.badge');
     if (badge && badge.textContent !== `v${VERSION}`) badge.textContent = `v${VERSION}`;
     document.title = `Sertavo Instagram Generator v${VERSION}`;
     const warn = document.querySelector('.note.warn');
     if (warn && !warn.innerHTML.includes(`v${VERSION}`)) {
-      warn.innerHTML = `<strong>v${VERSION}:</strong> נוספו בקרות התאמת תמונה למסגרת (מילוי/כל התמונה, זום והזזה), ויושר מבנה הטלפון כך שהמסגרת העליונה והתחתונה עקביות.`;
+      warn.innerHTML = `<strong>v${VERSION}:</strong> C3S4 ננעל עם כותרת ממירה יותר - "רוצה לבדוק על העור? ערכת התנסות." תוך שמירה על ערכת ההתנסות כאפשרות ולא כברירת מחדל לכל לקוח.`;
     }
   };
 
@@ -27,6 +27,7 @@
     loadScriptOnce('c3s4-kit-1219.js?v=1219-prod1', 'data-c3s4-kit-1219', '1');
     loadScriptOnce('c3s4-polish-1220.js?v=1220-prod1', 'data-c3s4-polish-1220', '1');
     loadScriptOnce('media-controls-phone-1221.js?v=1221-prod1', 'data-media-phone-1221', '1');
+    loadScriptOnce('c3s4-copy-1222.js?v=1222-prod1', 'data-c3s4-copy-1222', '1');
   };
 
   applyVersion();
