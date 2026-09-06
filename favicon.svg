@@ -1,1 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sertavo"><g fill="none" stroke="#C8A35A" stroke-linecap="round" stroke-linejoin="round"><path d="M32 7v4" stroke-width="3"/><path d="M28 7h8" stroke-width="2.5"/><circle cx="32" cy="33" r="22" stroke-width="3"/><circle cx="32" cy="33" r="18" stroke-width="1.4" opacity=".75"/><path d="M48 46c4.5-1.5 7.5-4 9-7.5M49 49c4.8-.4 8.3-2 10.5-4.7M48.5 43c.8-4 2.8-7 6-9.2M52 46.5c3.2-.2 5.7-1.2 7.5-3" stroke-width="1.8"/></g><text x="32" y="43" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#C8A35A">S</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sertavo">
+  <circle cx="32" cy="32" r="28" fill="#10243B"/>
+  <text
+    x="32"
+    y="42"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="34"
+    font-weight="600"
+    fill="#C8A35A">S</text>
+</svg>
