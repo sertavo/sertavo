@@ -278,6 +278,53 @@ textarea::placeholder{color:#9aa3aa}
     els.formMessage.className = 'message';
   }
 
+  function clearValidationHint(target) {
+    if (!target) return;
+    target.querySelector('.validation-hint')?.remove();
+    target.style.outline = '';
+    target.style.outlineOffset = '';
+    target.style.borderRadius = '';
+  }
+
+  function findFirstMissingTarget() {
+    const groups = ['preference', 'A_liking', 'A_fit', 'A_wear'];
+    if (state.context?.perfume_b) groups.push('B_liking', 'B_fit', 'B_wear');
+    groups.push('ownership');
+
+    for (const group of groups) {
+      if (!selected(group)) {
+        const input = document.querySelector(`input[name="${group}"]`);
+        return input?.closest('.rating-block') || input?.closest('fieldset') || null;
+      }
+    }
+    return null;
+  }
+
+  function pointToMissingAnswer() {
+    const target = findFirstMissingTarget();
+    if (!target) return;
+
+    clearValidationHint(target);
+    target.style.outline = '2px solid rgba(138,52,64,.35)';
+    target.style.outlineOffset = '-2px';
+    target.style.borderRadius = '12px';
+
+    const hint = document.createElement('div');
+    hint.className = 'validation-hint';
+    hint.setAttribute('role', 'alert');
+    hint.textContent = 'נשאר להשלים את השאלה הזו כדי לשלוח את הפידבק.';
+    hint.style.marginTop = '10px';
+    hint.style.color = 'var(--danger)';
+    hint.style.fontSize = '12.5px';
+    hint.style.fontWeight = '700';
+    hint.style.lineHeight = '1.45';
+    target.appendChild(hint);
+
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+
   function addChoice(container, group, value, label) {
     const wrap = document.createElement('div');
     wrap.className = 'choice';
@@ -481,15 +528,19 @@ textarea::placeholder{color:#9aa3aa}
     }
   }
 
+  els.feedbackForm.addEventListener('change', (event) => {
+    const target = event.target.closest('.rating-block') || event.target.closest('fieldset');
+    clearValidationHint(target);
+    clearFormMessage();
+  });
+
   els.feedbackForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     clearFormMessage();
 
     const data = collectFeedback();
     if (!validateFeedback(data)) {
-      showFormMessage('כדי לשלוח את הפידבק, נשאר רק להשלים את השאלות המסומנות.');
-      const firstUnchecked = document.querySelector('fieldset input:not(:checked)');
-      firstUnchecked?.closest('fieldset')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      pointToMissingAnswer();
       return;
     }
 
