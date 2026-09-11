@@ -1,0 +1,90 @@
+name: Public Repository Security Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  security-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Block forbidden files and paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r file; do
+            lower="$(printf '%s' "$file" | tr '[:upper:]' '[:lower:]')"
+            case "$lower" in
+              .env|.env.*|*/.env|*/.env.*|*.pem|*.key|*.p12|*.pfx|*.jks|*.keystore|internal/*|*/internal/*|recommendation/*|*/recommendation/*|supabase/*|*/supabase/*|*generator_spec*.md|*backup*|*.bak|*.old|*.tmp|*.temp)
+                echo "FORBIDDEN PUBLIC FILE: $file"
+                fail=1
+                ;;
+            esac
+          done < <(git ls-files)
+          if [ "$fail" -ne 0 ]; then
+            echo "Sensitive/internal files must stay in sertavo/sertavo-backend."
+            exit 1
+          fi
+
+      - name: Scan text files for high-risk secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r file; do
+            case "$file" in
+              SECURITY.md|.gitignore|.github/workflows/public-repo-security.yml)
+                continue
+                ;;
+            esac
+            if ! grep -Iq . "$file" 2>/dev/null; then
+              continue
+            fi
+
+            if grep -nE -- '-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----' "$file"; then
+              echo "PRIVATE KEY MATERIAL DETECTED: $file"
+              fail=1
+            fi
+            if grep -nE -- 'sb_secret_[A-Za-z0-9_-]{16,}' "$file"; then
+              echo "SUPABASE SECRET KEY DETECTED: $file"
+              fail=1
+            fi
+            if grep -nE -- '(service[_-]?role|SERVICE[_-]?ROLE)[^A-Za-z0-9]{0,8}[=:][^[:space:]"'"']{12,}' "$file"; then
+              echo "POSSIBLE SERVICE-ROLE CREDENTIAL DETECTED: $file"
+              fail=1
+            fi
+            if grep -nE -- '(DATABASE_URL|JWT_SECRET|PRIVATE_KEY|CLIENT_SECRET|WEBHOOK_SECRET|API_SECRET|ACCESS_TOKEN)[[:space:]]*[=:][[:space:]]*["'"']?[^[:space:]"'"']{12,}' "$file"; then
+              echo "POSSIBLE PRIVILEGED SECRET DETECTED: $file"
+              fail=1
+            fi
+            if grep -nE -- 'sk-[A-Za-z0-9_-]{20,}' "$file"; then
+              echo "POSSIBLE API SECRET DETECTED: $file"
+              fail=1
+            fi
+          done < <(git ls-files)
+
+          if [ "$fail" -ne 0 ]; then
+            echo "Security gate failed. Rotate any real credential before removing it from code."
+            exit 1
+          fi
+
+      - name: Assert private business logic is absent
+        shell: bash
+        run: |
+          set -euo pipefail
+          forbidden='engine_v1|recommendation engine|recommendation/|internal/product|internal/security|supabase/functions\.sql|supabase/security\.sql|supabase/schema\.sql'
+          if git grep -nEi "$forbidden" -- ':!SECURITY.md' ':!.github/workflows/public-repo-security.yml' ':!.gitignore'; then
+            echo "Private business/backend material detected in the public repository."
+            exit 1
+          fi
