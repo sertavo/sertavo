@@ -5,7 +5,7 @@ const BLEED_MM=3;
 const BLEED_PAGE_MM=91;
 const BLEED_PX=Math.round(BLEED_PAGE_MM/25.4*PRINT_DPI);
 const BLEED_OFFSET_PX=Math.round(BLEED_MM/25.4*PRINT_DPI);
-const COLORS={cream:"#F6F0E4",navy:"#074686",gold:"#B89558",ink:"#17212B",muted:"#66717B"};
+const COLORS={cream:"#F6F0E4",navy:"#074686",gold:"#B89558",ink:"#17212B",muted:"#66717B"};\nconst SUPABASE_URL="https://nyedulxukszcwmwsuuxw.supabase.co";\nconst SUPABASE_KEY="sb_publishable_mQNwiQoN56Zn_WQyqXzHcQ_g86AruZT";\nconst FEEDBACK_BASE="https://sertavo.co/feedback/index-no-credit.html";
 const front=document.getElementById("front");
 const back=document.getElementById("back");
 const fctx=front.getContext("2d");
@@ -217,12 +217,52 @@ async function canvasToTransparentQr(source){
   cx.putImageData(image,0,0);
   return dataUrlToImage(c.toDataURL("image/png"));
 }
+function extractToken(raw){
+  const v=(raw||"").trim();
+  const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if(uuid.test(v))return v.toLowerCase();
+  try{
+    const u=new URL(v);
+    const t=(u.searchParams.get("t")||u.searchParams.get("token")||"").trim();
+    return uuid.test(t)?t.toLowerCase():null;
+  }catch(e){return null;}
+}
+async function validateFeedbackToken(token){
+  const response=await fetch(SUPABASE_URL+"/rest/v1/rpc/get_feedback_context_v1",{
+    method:"POST",
+    headers:{
+      "apikey":SUPABASE_KEY,
+      "Authorization":"Bearer "+SUPABASE_KEY,
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({p_token:token})
+  });
+  let data=null;
+  try{data=await response.json();}catch(e){}
+  if(!response.ok||!data||!data.ok){
+    const err=(data&&data.error)||"invalid_token";
+    throw new Error(err);
+  }
+  return data;
+}
 async function generateQr(){
-  const val=urlInput.value.trim();
-  if(!/^https:\/\//i.test(val)){
-    setStatus("יש להזין קישור שמתחיל ב-https://","bad");
+  const token=extractToken(urlInput.value);
+  if(!token){
+    setStatus("יש להזין מזהה פידבק תקין או קישור שמכיל t=UUID.","bad");
     return;
   }
+  setStatus("בודק שהמזהה משויך לערכה פעילה...");
+  let ctx;
+  try{
+    ctx=await validateFeedbackToken(token);
+  }catch(e){
+    setStatus(e.message==="kit_not_assigned" ? "המזהה קיים אך עדיין לא שויך לערכה." : "המזהה אינו פעיל או לא נמצא.","bad");
+    return;
+  }
+  const val=FEEDBACK_BASE+"?t="+encodeURIComponent(token);
+  urlInput.value=val;
+  if(!caseInput.value && ctx.kit_id)caseInput.value=ctx.kit_id;
+
   scratch.innerHTML="";
   const qr=new QRCode(scratch,{
     text:val,
@@ -239,7 +279,8 @@ async function generateQr(){
       qrImage=await canvasToTransparentQr(c);
     }
     redraw();
-    setStatus("ה-QR נוצר: רקע שקוף, Quiet Zone תקין, רמת תיקון M.","good");
+    const perfumes=[ctx.perfume_a,ctx.perfume_b].filter(Boolean).join(" / ");
+    setStatus("המזהה אומת מול Sertavo"+(ctx.kit_id?" · "+ctx.kit_id:"")+(perfumes?" · "+perfumes:"")+"; ה-QR מוכן.","good");
   }catch(e){
     setStatus("לא הצלחתי ליצור את ה-QR.","bad");
   }
