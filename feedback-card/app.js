@@ -1,4 +1,10 @@
 const W=1004,H=1004;
+const SCALE=2; // 2008px / 85mm = ~600 DPI
+const PRINT_DPI=600;
+const BLEED_MM=3;
+const BLEED_PAGE_MM=91;
+const BLEED_PX=Math.round(BLEED_PAGE_MM/25.4*PRINT_DPI);
+const BLEED_OFFSET_PX=Math.round(BLEED_MM/25.4*PRINT_DPI);
 const COLORS={cream:"#F6F0E4",navy:"#074686",gold:"#B89558",ink:"#17212B",muted:"#66717B"};
 const front=document.getElementById("front");
 const back=document.getElementById("back");
@@ -26,6 +32,13 @@ function fileBase(){
 }
 function font(weight,size){
   return String(weight)+" "+String(size)+'px "Heebo", Arial, sans-serif';
+}
+function prepCanvas(ctx,canvas){
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.setTransform(SCALE,0,0,SCALE,0,0);
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality="high";
 }
 function fitImage(ctx,img,x,y,w,h){
   const r=Math.min(w/img.width,h/img.height);
@@ -79,9 +92,17 @@ function drawLogo(ctx){
   }else{
     text(ctx,"SERTAVO",502,75,34,600,COLORS.gold);
   }
+  ctx.save();
+  ctx.strokeStyle="#8D887F";
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(452,158);
+  ctx.lineTo(552,158);
+  ctx.stroke();
+  ctx.restore();
 }
 function drawFront(){
-  fctx.clearRect(0,0,W,H);
+  prepCanvas(fctx,front);
   fctx.fillStyle=COLORS.cream;
   fctx.fillRect(0,0,W,H);
   drawLogo(fctx);
@@ -90,10 +111,11 @@ function drawFront(){
   text(fctx,"אחרי ההתנסות, נשמח לפידבק קצר",502,364,27,500,COLORS.navy);
 
   const qx=396,qy=444,qs=213;
-  fctx.fillStyle="#fff";
-  fctx.fillRect(qx-10,qy-10,qs+20,qs+20);
   if(qrImage){
+    fctx.save();
+    fctx.imageSmoothingEnabled=false;
     fctx.drawImage(qrImage,qx,qy,qs,qs);
+    fctx.restore();
   }else{
     fctx.strokeStyle="#C7BBA6";
     fctx.lineWidth=3;
@@ -109,7 +131,7 @@ function drawFront(){
   text(fctx,"הפידבק שלך עוזר לנו להשלים את המלצת הקנייה",502,835,20,500,COLORS.navy);
 }
 function drawBack(){
-  bctx.clearRect(0,0,W,H);
+  prepCanvas(bctx,back);
   bctx.fillStyle=COLORS.cream;
   bctx.fillRect(0,0,W,H);
   drawLogo(bctx);
@@ -127,9 +149,17 @@ function redraw(){
 async function loadLogo(){
   return new Promise(function(resolve){
     const img=new Image();
-    img.onload=function(){logoImage=img;logoCrop=detectVisibleCrop(img);redraw();resolve();};
-    img.onerror=function(){redraw();resolve();};
-    img.src="../logo.png";
+    img.onload=function(){
+      logoImage=img;
+      logoCrop=detectVisibleCrop(img);
+      redraw();
+      resolve();
+    };
+    img.onerror=function(){
+      redraw();
+      resolve();
+    };
+    img.src="logo-gold.png?v=20260921-print";
   });
 }
 function dataUrlToImage(src){
@@ -140,6 +170,53 @@ function dataUrlToImage(src){
     img.src=src;
   });
 }
+async function modelToTransparentQr(qr){
+  const model=qr&&qr._oQRCode;
+  if(!model||typeof model.getModuleCount!=="function"||typeof model.isDark!=="function")return null;
+  const count=model.getModuleCount();
+  const quiet=4;
+  const cell=18;
+  const total=(count+quiet*2)*cell;
+  const c=document.createElement("canvas");
+  c.width=total;
+  c.height=total;
+  const cx=c.getContext("2d");
+  cx.clearRect(0,0,total,total);
+  cx.fillStyle="#000000";
+  for(let row=0;row<count;row++){
+    for(let col=0;col<count;col++){
+      if(model.isDark(row,col)){
+        cx.fillRect((col+quiet)*cell,(row+quiet)*cell,cell,cell);
+      }
+    }
+  }
+  return dataUrlToImage(c.toDataURL("image/png"));
+}
+async function canvasToTransparentQr(source){
+  const padRatio=0.08;
+  const sw=source.width||700,sh=source.height||700;
+  const side=Math.max(sw,sh);
+  const pad=Math.max(20,Math.round(side*padRatio));
+  const c=document.createElement("canvas");
+  c.width=side+pad*2;
+  c.height=side+pad*2;
+  const cx=c.getContext("2d",{willReadFrequently:true});
+  cx.clearRect(0,0,c.width,c.height);
+  cx.drawImage(source,pad,pad,side,side);
+  const image=cx.getImageData(0,0,c.width,c.height);
+  const d=image.data;
+  for(let i=0;i<d.length;i+=4){
+    const lum=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+    if(lum<150){
+      d[i]=0;d[i+1]=0;d[i+2]=0;d[i+3]=255;
+    }else{
+      d[i]=0;d[i+1]=0;d[i+2]=0;d[i+3]=0;
+    }
+  }
+  cx.clearRect(0,0,c.width,c.height);
+  cx.putImageData(image,0,0);
+  return dataUrlToImage(c.toDataURL("image/png"));
+}
 async function generateQr(){
   const val=urlInput.value.trim();
   if(!/^https:\/\//i.test(val)){
@@ -147,15 +224,22 @@ async function generateQr(){
     return;
   }
   scratch.innerHTML="";
-  new QRCode(scratch,{text:val,width:700,height:700,correctLevel:QRCode.CorrectLevel.H});
+  const qr=new QRCode(scratch,{
+    text:val,
+    width:700,
+    height:700,
+    correctLevel:QRCode.CorrectLevel.M
+  });
   await new Promise(function(r){setTimeout(r,100);});
-  const c=scratch.querySelector("canvas");
-  const img=scratch.querySelector("img");
   try{
-    const src=c?c.toDataURL("image/png"):img.src;
-    qrImage=await dataUrlToImage(src);
+    qrImage=await modelToTransparentQr(qr);
+    if(!qrImage){
+      const c=scratch.querySelector("canvas");
+      if(!c)throw new Error("QR canvas missing");
+      qrImage=await canvasToTransparentQr(c);
+    }
     redraw();
-    setStatus("ה-QR נוצר ומוכן לייצוא.","good");
+    setStatus("ה-QR נוצר: רקע שקוף, Quiet Zone תקין, רמת תיקון M.","good");
   }catch(e){
     setStatus("לא הצלחתי ליצור את ה-QR.","bad");
   }
@@ -166,9 +250,15 @@ fileInput.addEventListener("change",function(){
   const r=new FileReader();
   r.onload=async function(){
     try{
-      qrImage=await dataUrlToImage(r.result);
+      const source=await dataUrlToImage(r.result);
+      const c=document.createElement("canvas");
+      c.width=source.naturalWidth||source.width;
+      c.height=source.naturalHeight||source.height;
+      const cx=c.getContext("2d");
+      cx.drawImage(source,0,0,c.width,c.height);
+      qrImage=await canvasToTransparentQr(c);
       redraw();
-      setStatus("תמונת ה-QR נטענה ומוכנה לייצוא.","good");
+      setStatus("תמונת ה-QR נטענה, נוקתה לרקע שקוף ומוכנה לייצוא.","good");
     }catch(e){
       setStatus("לא הצלחתי לקרוא את תמונת ה-QR.","bad");
     }
@@ -190,11 +280,32 @@ function downloadCanvas(canvas,name){
   a.href=canvas.toDataURL("image/png");
   a.click();
 }
+function makeBleedCanvas(source){
+  const c=document.createElement("canvas");
+  c.width=BLEED_PX;
+  c.height=BLEED_PX;
+  const cx=c.getContext("2d");
+  cx.fillStyle=COLORS.cream;
+  cx.fillRect(0,0,c.width,c.height);
+  cx.imageSmoothingEnabled=true;
+  cx.imageSmoothingQuality="high";
+  cx.drawImage(source,BLEED_OFFSET_PX,BLEED_OFFSET_PX,source.width,source.height);
+  return c;
+}
+function addCropMarks(pdf){
+  pdf.setDrawColor(110,110,110);
+  pdf.setLineWidth(0.12);
+  const a=0.7,b=2.5,t=3,r=88;
+  pdf.line(a,t,b,t); pdf.line(t,a,t,b);
+  pdf.line(BLEED_PAGE_MM-b,t,BLEED_PAGE_MM-a,t); pdf.line(r,a,r,b);
+  pdf.line(a,r,b,r); pdf.line(t,BLEED_PAGE_MM-b,t,BLEED_PAGE_MM-a);
+  pdf.line(BLEED_PAGE_MM-b,r,BLEED_PAGE_MM-a,r); pdf.line(r,BLEED_PAGE_MM-b,r,BLEED_PAGE_MM-a);
+}
 document.getElementById("downloadFront").addEventListener("click",function(){
-  if(requireQr())downloadCanvas(front,fileBase()+"_חזית.png");
+  if(requireQr())downloadCanvas(front,fileBase()+"_חזית_600dpi.png");
 });
 document.getElementById("downloadBack").addEventListener("click",function(){
-  if(requireQr())downloadCanvas(back,fileBase()+"_גב.png");
+  if(requireQr())downloadCanvas(back,fileBase()+"_גב_600dpi.png");
 });
 document.getElementById("downloadPdf").addEventListener("click",function(){
   if(!requireQr())return;
@@ -207,8 +318,26 @@ document.getElementById("downloadPdf").addEventListener("click",function(){
   pdf.addImage(front.toDataURL("image/png"),"PNG",0,0,85,85,undefined,"FAST");
   pdf.addPage([85,85],"portrait");
   pdf.addImage(back.toDataURL("image/png"),"PNG",0,0,85,85,undefined,"FAST");
-  pdf.save(fileBase()+"_דו-צדדי.pdf");
-  setStatus('ה-PDF הדו-צדדי נוצר בגודל 85×85 מ"מ.',"good");
+  pdf.save(fileBase()+"_85x85_דו-צדדי.pdf");
+  setStatus('נוצר PDF דו-צדדי 85×85 מ"מ ברזולוציית 600 DPI.',"good");
+});
+document.getElementById("downloadPrintPdf").addEventListener("click",function(){
+  if(!requireQr())return;
+  if(!window.jspdf||!window.jspdf.jsPDF){
+    setStatus("רכיב ה-PDF לא נטען. נסה לרענן את העמוד.","bad");
+    return;
+  }
+  const jsPDF=window.jspdf.jsPDF;
+  const frontBleed=makeBleedCanvas(front);
+  const backBleed=makeBleedCanvas(back);
+  const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:[BLEED_PAGE_MM,BLEED_PAGE_MM],compress:true});
+  pdf.addImage(frontBleed.toDataURL("image/png"),"PNG",0,0,BLEED_PAGE_MM,BLEED_PAGE_MM,undefined,"FAST");
+  addCropMarks(pdf);
+  pdf.addPage([BLEED_PAGE_MM,BLEED_PAGE_MM],"portrait");
+  pdf.addImage(backBleed.toDataURL("image/png"),"PNG",0,0,BLEED_PAGE_MM,BLEED_PAGE_MM,undefined,"FAST");
+  addCropMarks(pdf);
+  pdf.save(fileBase()+"_לדפוס_91x91_bleed3mm.pdf");
+  setStatus('נוצר PDF לדפוס 91×91 מ"מ: Trim 85×85, Bleed של 3 מ"מ ו-Crop Marks.',"good");
 });
 document.getElementById("reset").addEventListener("click",function(){
   urlInput.value="";
