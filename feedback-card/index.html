@@ -9,10 +9,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260921-1618" />
+<link rel="stylesheet" href="style.css?v=20260921-1700" />
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="app.js?v=20260921-1618" defer></script>
+<script src="app.js?v=20260921-1700" defer></script>
 </head>
 <body>
 <div class="app">
@@ -29,7 +29,7 @@
       <label class="upload">העלה תמונת QR
         <input id="qrFile" type="file" accept="image/png,image/jpeg,image/webp" />
       </label>
-      <p class="tiny">אפשר להשתמש ב-QR שכבר נוצר למקרה. אם מכניסים קישור, ה-QR נוצר מקומית בדפדפן.</p>
+      <p class="tiny">אפשר להשתמש ב-QR שכבר נוצר למקרה. QR שנוצר או מועלה מומר לרקע שקוף ונשמר עם אזור שקט לסריקה.</p>
     </section>
     <section>
       <h2>שם הקובץ</h2>
@@ -40,7 +40,8 @@
     <div class="actions">
       <button id="downloadFront">הורד חזית PNG</button>
       <button id="downloadBack">הורד גב PNG</button>
-      <button id="downloadPdf" class="gold">הורד PDF דו-צדדי</button>
+      <button id="downloadPdf">הורד PDF 85×85</button>
+      <button id="downloadPrintPdf" class="gold">הורד PDF לדפוס + Bleed</button>
       <button id="reset" class="secondary">איפוס</button>
     </div>
     <div id="status" class="status">מחכה ל-QR אישי.</div>
@@ -48,11 +49,11 @@
   <main class="stage">
     <div class="previewBlock">
       <div class="previewTitle">חזית</div>
-      <canvas id="front" width="1004" height="1004" aria-label="חזית כרטיס המשוב"></canvas>
+      <canvas id="front" width="2008" height="2008" aria-label="חזית כרטיס המשוב"></canvas>
     </div>
     <div class="previewBlock">
       <div class="previewTitle">גב</div>
-      <canvas id="back" width="1004" height="1004" aria-label="גב כרטיס המשוב"></canvas>
+      <canvas id="back" width="2008" height="2008" aria-label="גב כרטיס המשוב"></canvas>
     </div>
   </main>
 </div>
