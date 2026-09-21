@@ -11,6 +11,7 @@ const statusEl=document.getElementById("status");
 const scratch=document.getElementById("qrScratch");
 let qrImage=null;
 let logoImage=null;
+let logoCrop=null;
 
 function setStatus(msg,type){
   statusEl.textContent=msg;
@@ -31,6 +32,34 @@ function fitImage(ctx,img,x,y,w,h){
   const dw=img.width*r,dh=img.height*r;
   ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
 }
+function detectVisibleCrop(img){
+  try{
+    const c=document.createElement("canvas");
+    c.width=img.naturalWidth||img.width;
+    c.height=img.naturalHeight||img.height;
+    const cx=c.getContext("2d",{willReadFrequently:true});
+    cx.drawImage(img,0,0);
+    const data=cx.getImageData(0,0,c.width,c.height).data;
+    let minX=c.width,minY=c.height,maxX=-1,maxY=-1;
+    for(let y=0;y<c.height;y++){
+      for(let x=0;x<c.width;x++){
+        const a=data[(y*c.width+x)*4+3];
+        if(a>18){
+          if(x<minX)minX=x;if(x>maxX)maxX=x;
+          if(y<minY)minY=y;if(y>maxY)maxY=y;
+        }
+      }
+    }
+    if(maxX<minX||maxY<minY)return null;
+    return {x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
+  }catch(e){return null;}
+}
+function fitVisibleImage(ctx,img,crop,x,y,w,h){
+  if(!crop){fitImage(ctx,img,x,y,w,h);return;}
+  const r=Math.min(w/crop.w,h/crop.h);
+  const dw=crop.w*r,dh=crop.h*r;
+  ctx.drawImage(img,crop.x,crop.y,crop.w,crop.h,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+}
 function text(ctx,txt,x,y,size,weight,color,align){
   ctx.save();
   ctx.fillStyle=color||COLORS.navy;
@@ -46,7 +75,7 @@ function multiline(ctx,lines,x,y,size,lh,weight,color){
 }
 function drawLogo(ctx){
   if(logoImage){
-    fitImage(ctx,logoImage,423,49,158,103);
+    fitVisibleImage(ctx,logoImage,logoCrop,423,49,158,103);
   }else{
     text(ctx,"SERTAVO",502,75,34,600,COLORS.gold);
   }
@@ -98,7 +127,7 @@ function redraw(){
 async function loadLogo(){
   return new Promise(function(resolve){
     const img=new Image();
-    img.onload=function(){logoImage=img;redraw();resolve();};
+    img.onload=function(){logoImage=img;logoCrop=detectVisibleCrop(img);redraw();resolve();};
     img.onerror=function(){redraw();resolve();};
     img.src="../logo.png";
   });
