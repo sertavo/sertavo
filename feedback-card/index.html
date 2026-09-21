@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>מחולל כרטיס המשוב</title>
+<meta name="robots" content="noindex,nofollow,noarchive" />
+<meta name="theme-color" content="#074686" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <h1>מחולל כרטיס המשוב</h1>
+    <p class="sub">מבוסס על כרטיס המשוב הקיים של Sertavo בגודל 85×85 מ"מ. העיצוב קבוע; מחליפים רק את ה-QR האישי.</p>
+    <div class="privacy"><strong>פרטיות:</strong> ה-QR והקישור נשארים בדפדפן שלך. המחולל אינו שומר נתוני לקוח בשרת.</div>
+    <section>
+      <h2>QR אישי</h2>
+      <label for="feedbackUrl">קישור לפידבק</label>
+      <input id="feedbackUrl" type="url" placeholder="https://..." autocomplete="off" />
+      <button id="makeQr" class="gold full">צור QR מהקישור</button>
+      <div class="or">או</div>
+      <label class="upload">העלה תמונת QR
+        <input id="qrFile" type="file" accept="image/png,image/jpeg,image/webp" />
+      </label>
+      <p class="tiny">אפשר להשתמש ב-QR שכבר נוצר למקרה. אם מכניסים קישור, ה-QR נוצר מקומית בדפדפן.</p>
+    </section>
+    <section>
+      <h2>שם הקובץ</h2>
+      <label for="caseId">מזהה מקרה, אופציונלי</label>
+      <input id="caseId" type="text" placeholder="CASE-01" autocomplete="off" />
+      <p class="tiny">המזהה נכנס רק לשם הקובץ, לא מודפס על הכרטיס.</p>
+    </section>
+    <div class="actions">
+      <button id="downloadFront">הורד חזית PNG</button>
+      <button id="downloadBack">הורד גב PNG</button>
+      <button id="downloadPdf" class="gold">הורד PDF דו-צדדי</button>
+      <button id="reset" class="secondary">איפוס</button>
+    </div>
+    <div id="status" class="status">מחכה ל-QR אישי.</div>
+  </aside>
+  <main class="stage">
+    <div class="previewBlock">
+      <div class="previewTitle">חזית</div>
+      <canvas id="front" width="1004" height="1004" aria-label="חזית כרטיס המשוב"></canvas>
+    </div>
+    <div class="previewBlock">
+      <div class="previewTitle">גב</div>
+      <canvas id="back" width="1004" height="1004" aria-label="גב כרטיס המשוב"></canvas>
+    </div>
+  </main>
+</div>
+<div id="qrScratch" aria-hidden="true"></div>
+</body>
+</html>
