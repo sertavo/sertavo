@@ -37,6 +37,40 @@ jobs:
             exit 1
           fi
 
+      - name: Enforce standard hyphen character
+        shell: bash
+        run: |
+          python - <<'PY'
+          import pathlib
+          import subprocess
+          import sys
+
+          forbidden = {
+              "\u2013": "EN DASH",
+              "\u2014": "EM DASH",
+          }
+          offenders = []
+
+          files = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+          for name in files:
+              path = pathlib.Path(name)
+              try:
+                  text = path.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+
+              for char, label in forbidden.items():
+                  if char in text:
+                      lines = [i for i, line in enumerate(text.splitlines(), start=1) if char in line]
+                      offenders.append((name, label, lines))
+
+          if offenders:
+              for name, label, lines in offenders:
+                  print(f"FORBIDDEN DASH CHARACTER: {name} - {label} on lines {lines}")
+              print("Use the standard ASCII hyphen-minus (-) in Sertavo public content.")
+              sys.exit(1)
+          PY
+
       - name: Scan text files for high-risk secrets
         shell: bash
         run: |
