@@ -49,15 +49,34 @@ async function openGenerator(session){
     message("חשבון Google הזה אינו מורשה. בחר באחד משני החשבונות שאושרו.","bad");
     return;
   }
-  const r=await fetch(FN,{headers:{Authorization:"Bearer "+session.access_token}});
-  if(r.status===403){
-    await client.auth.signOut();
+  try{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),12000);
+    const r=await fetch(FN,{
+      method:"GET",
+      mode:"cors",
+      headers:{Authorization:"Bearer "+session.access_token},
+      signal:controller.signal
+    });
+    clearTimeout(timer);
+    if(r.status===403){
+      await client.auth.signOut();
+      $("loading").classList.add("hidden");$("login").classList.remove("hidden");
+      message("החשבון הזה אינו מורשה להיכנס למחולל.","bad");
+      return;
+    }
+    if(!r.ok){
+      $("loading").classList.add("hidden");$("login").classList.remove("hidden");
+      message("המחולל החזיר שגיאה "+r.status+". נסה שוב.","bad");
+      return;
+    }
+    const page=await r.text();
+    document.open();document.write(page);document.close();
+  }catch(err){
     $("loading").classList.add("hidden");$("login").classList.remove("hidden");
-    message("החשבון הזה אינו מורשה להיכנס למחולל.","bad");
-    return;
+    const timeout=err&&err.name==="AbortError";
+    message(timeout?"טעינת המחולל ארכה יותר מדי. רענן את העמוד ונסה שוב.":"לא הצלחתי להתחבר למחולל. רענן את העמוד ונסה שוב.","bad");
   }
-  if(!r.ok){$("loading").classList.add("hidden");$("login").classList.remove("hidden");message("לא הצלחתי לטעון את המחולל. נסה שוב.","bad");return}
-  const page=await r.text();document.open();document.write(page);document.close();
 }
 async function boot(){
   const {data:{session}}=await client.auth.getSession();
