@@ -52,25 +52,25 @@ async function renderProtectedPage(page){
   document.documentElement.lang=parsed.documentElement.lang||"he";
   document.documentElement.dir=parsed.documentElement.dir||"rtl";
   document.title=parsed.title||"Sertavo";
-
   document.head.innerHTML=parsed.head.innerHTML;
   document.body.innerHTML=parsed.body.innerHTML;
 
-  for(const def of scriptDefs){
-    if(def.src){
-      await new Promise((resolve,reject)=>{
-        const s=document.createElement("script");
-        s.src=def.src;
-        if(def.type)s.type=def.type;
-        s.onload=resolve;
-        s.onerror=()=>reject(new Error("script load failed"));
-        document.head.appendChild(s);
-      });
-    }else if(def.text.trim()){
-      // Run protected-page code in its own function scope so its const/let
-      // declarations cannot collide with the login page's globals.
-      new Function(def.text)();
-    }
+  // Execute the generator logic immediately, without eval and without
+  // colliding with globals from the login page.
+  for(const def of scriptDefs.filter(x=>!x.src && x.text.trim())){
+    const s=document.createElement("script");
+    if(def.type)s.type=def.type;
+    s.textContent="(()=>{\n"+def.text+"\n})();";
+    document.body.appendChild(s);
+  }
+
+  // Load external helper libraries (jsPDF) after the UI logic is live.
+  for(const def of scriptDefs.filter(x=>x.src)){
+    const s=document.createElement("script");
+    s.src=def.src;
+    if(def.type)s.type=def.type;
+    s.async=true;
+    document.head.appendChild(s);
   }
 }
 async function openGenerator(session){
