@@ -31,6 +31,8 @@ button{width:100%;margin-top:10px;padding:13px;border:0;border-radius:10px;backg
 const SB_URL="https://nyedulxukszcwmwsuuxw.supabase.co";
 const SB_KEY="sb_publishable_mQNwiQoN56Zn_WQyqXzHcQ_g86AruZT";
 const FN=SB_URL+"/functions/v1/vial-label-admin";
+const REDIRECT_URL="https://sertavo.co/vial-label/";
+const ALLOWED_EMAILS=new Set(["shlomielberg@gmail.com","sertavo.perfumes@gmail.com"]);
 const client=window.supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id);
 function message(t,k=""){const m=$("msg");m.textContent=t;m.className="msg"+(k?" "+k:"");m.classList.remove("hidden")}
@@ -47,12 +49,26 @@ async function boot(){
   client.auth.onAuthStateChange(async(_,s)=>{if(s)await openGenerator(s)});
 }
 $("send").onclick=async()=>{
-  const email=$("email").value.trim();if(!email){message("הזן כתובת מייל.","bad");return}
-  $("send").disabled=true;
-  const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});
-  $("send").disabled=false;
-  if(error){message("לא הצלחתי לשלוח קישור כניסה: "+error.message,"bad");return}
-  message("שלחתי קישור כניסה למייל. פתח אותו באותו מכשיר ואז תחזור לכאן.","good");
+  const email=$("email").value.trim().toLowerCase();
+  if(!email){message("הזן כתובת מייל.","bad");return}
+  if(!ALLOWED_EMAILS.has(email)){message("כתובת המייל הזו אינה מורשית לכניסה.","bad");return}
+  const btn=$("send");
+  btn.disabled=true;
+  const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:REDIRECT_URL}});
+  if(error){
+    btn.disabled=false;
+    const raw=(error.message||"").toLowerCase();
+    if(raw.includes("rate limit")||raw.includes("after")){
+      message("נחסמה זמנית שליחת מיילים בגלל כמה ניסיונות רצופים. אל תנסה שוב כרגע - נתקן את ההפניה לפני הניסיון הבא.","bad");
+    } else {
+      message("לא הצלחתי לשלוח קישור כניסה: "+error.message,"bad");
+    }
+    return
+  }
+  let left=60;
+  message("שלחתי קישור כניסה למייל. אל תלחץ שוב על שליחה. אם הקישור מפנה ל-localhost, אל תנסה שוב - זו הגדרת Redirect ולא בעיה בחשבון.","good");
+  btn.textContent="אפשר לשלוח שוב בעוד "+left+" שנ׳";
+  const timer=setInterval(()=>{left--;if(left<=0){clearInterval(timer);btn.disabled=false;btn.textContent="שלח קישור כניסה"}else btn.textContent="אפשר לשלוח שוב בעוד "+left+" שנ׳"},1000);
 };
 boot();
 </script>
