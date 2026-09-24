@@ -40,6 +40,40 @@ const ALLOWED_EMAILS=new Set(["shlomielberg@gmail.com","sertavo.perfumes@gmail.c
 const client=window.supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id);
 function message(t,k=""){const m=$("msg");m.textContent=t;m.className="msg"+(k?" "+k:"");m.classList.remove("hidden")}
+async function renderProtectedPage(page){
+  const parsed=new DOMParser().parseFromString(page,"text/html");
+  const scriptDefs=[...parsed.querySelectorAll("script")].map(s=>({
+    src:s.getAttribute("src"),
+    type:s.getAttribute("type"),
+    text:s.textContent||""
+  }));
+  parsed.querySelectorAll("script").forEach(s=>s.remove());
+
+  document.documentElement.lang=parsed.documentElement.lang||"he";
+  document.documentElement.dir=parsed.documentElement.dir||"rtl";
+  document.title=parsed.title||"Sertavo";
+
+  document.head.innerHTML=parsed.head.innerHTML;
+  document.body.innerHTML=parsed.body.innerHTML;
+
+  for(const def of scriptDefs){
+    if(def.src){
+      await new Promise((resolve,reject)=>{
+        const s=document.createElement("script");
+        s.src=def.src;
+        if(def.type)s.type=def.type;
+        s.onload=resolve;
+        s.onerror=()=>reject(new Error("script load failed"));
+        document.head.appendChild(s);
+      });
+    }else if(def.text.trim()){
+      const s=document.createElement("script");
+      if(def.type)s.type=def.type;
+      s.textContent=def.text;
+      document.body.appendChild(s);
+    }
+  }
+}
 async function openGenerator(session){
   $("login").classList.add("hidden");$("loading").classList.remove("hidden");
   const email=(session?.user?.email||"").toLowerCase();
@@ -71,7 +105,7 @@ async function openGenerator(session){
       return;
     }
     const page=await r.text();
-    document.open();document.write(page);document.close();
+    await renderProtectedPage(page);
   }catch(err){
     $("loading").classList.add("hidden");$("login").classList.remove("hidden");
     const timeout=err&&err.name==="AbortError";
