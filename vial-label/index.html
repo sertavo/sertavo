@@ -67,10 +67,9 @@ async function renderProtectedPage(page){
         document.head.appendChild(s);
       });
     }else if(def.text.trim()){
-      const s=document.createElement("script");
-      if(def.type)s.type=def.type;
-      s.textContent=def.text;
-      document.body.appendChild(s);
+      // Run protected-page code in its own function scope so its const/let
+      // declarations cannot collide with the login page's globals.
+      new Function(def.text)();
     }
   }
 }
